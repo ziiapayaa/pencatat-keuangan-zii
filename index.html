@@ -271,63 +271,66 @@
             </div>
         </div>
         
-        <!-- ==================== SLIM FLOATING NAVBAR ==================== -->
+        <!-- ==================== SPLIT FLOATING NAVBAR ==================== -->
 
-        <div class="fixed bottom-5 left-0 right-0 z-30 w-full flex justify-center px-5 pointer-events-none">
-            <div class="w-full max-w-[360px] relative pointer-events-auto">
-                <!-- Glow effect below navbar -->
-                <div class="absolute -bottom-2 inset-x-8 h-8 bg-black/10 dark:bg-black/30 blur-[18px] rounded-full z-0 pointer-events-none"></div>
-                <!-- Navbar pill -->
-                <div id="main-navbar" class="relative z-10 w-full flex items-center justify-around px-2 py-2
+        <div class="fixed bottom-4 left-0 right-0 z-30 flex justify-center px-4 pointer-events-none">
+            <div class="w-full max-w-[400px] flex items-end gap-3 pointer-events-auto">
+
+                <!-- Left panel: Home + Savings -->
+                <div class="flex-1 flex items-center justify-around h-[58px] px-1 rounded-[1.5rem]
                     bg-white/55 dark:bg-[#1a1a28]/55
                     backdrop-blur-[28px] saturate-150
                     border border-white/70 dark:border-white/15
-                    rounded-[2rem]
-                    shadow-[0_8px_32px_rgba(0,0,0,0.10),inset_0_-1px_0_rgba(255,255,255,0.15)]
-                    dark:shadow-[0_8px_32px_rgba(0,0,0,0.4),inset_0_-1px_0_rgba(255,255,255,0.05)]
-                    ">
+                    shadow-[0_4px_24px_rgba(0,0,0,0.10)]
+                    dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)]">
 
-                    <!-- Home -->
                     <button onclick="switchTab('home')" id="nav-home"
-                        class="nav-item group flex flex-col items-center justify-center gap-0.5 w-[60px] py-1.5 rounded-[1.2rem] transition-all duration-300 text-gray-400 dark:text-gray-500">
+                        class="nav-item flex flex-col items-center justify-center gap-0.5 w-[72px] py-1.5 rounded-[1.2rem] transition-all duration-300">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
-                        <span class="text-[9px] font-bold tracking-wide" data-i18n="home">Home</span>
+                        <span class="text-[9px] font-semibold tracking-wide" data-i18n="home">Home</span>
                     </button>
 
-                    <!-- Savings -->
                     <button onclick="switchTab('saving')" id="nav-saving"
-                        class="nav-item group flex flex-col items-center justify-center gap-0.5 w-[60px] py-1.5 rounded-[1.2rem] transition-all duration-300 text-gray-400 dark:text-gray-500">
+                        class="nav-item flex flex-col items-center justify-center gap-0.5 w-[72px] py-1.5 rounded-[1.2rem] transition-all duration-300">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <span class="text-[9px] font-bold tracking-wide" data-i18n="saving">Savings</span>
+                        <span class="text-[9px] font-semibold tracking-wide" data-i18n="saving">Savings</span>
                     </button>
-
-                    <!-- Center + button -->
-                    <button onclick="openActionSheet()" id="nav-add"
-                        class="flex items-center justify-center w-14 h-14 -mt-7
-                        text-white rounded-full
-                        border border-white/30
-                        hover:opacity-90 active:scale-95 transition-all duration-200"
-                        style="background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%); box-shadow: 0 6px 24px rgba(0,122,255,0.45), 0 2px 8px rgba(88,86,214,0.3);">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 4v16m8-8H4"></path></svg>
-                    </button>
-
-                    <!-- Report -->
-                    <button onclick="switchTab('report')" id="nav-report"
-                        class="nav-item group flex flex-col items-center justify-center gap-0.5 w-[60px] py-1.5 rounded-[1.2rem] transition-all duration-300 text-gray-400 dark:text-gray-500">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                        <span class="text-[9px] font-bold tracking-wide" data-i18n="report">Report</span>
-                    </button>
-
-                    <!-- Settings -->
-                    <button onclick="switchTab('profile')" id="nav-profile"
-                        class="nav-item group flex flex-col items-center justify-center gap-0.5 w-[60px] py-1.5 rounded-[1.2rem] transition-all duration-300 text-gray-400 dark:text-gray-500">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                        <span class="text-[9px] font-bold tracking-wide" data-i18n="settings">Settings</span>
-                    </button>
-
                 </div>
+
+                <!-- Center + button -->
+                <button onclick="openActionSheet()" id="nav-add"
+                    class="flex items-center justify-center w-14 h-14 mb-1
+                    text-white rounded-full shrink-0
+                    border border-white/30
+                    hover:opacity-90 active:scale-95 transition-all duration-200"
+                    style="background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%); box-shadow: 0 6px 24px rgba(0,122,255,0.5), 0 2px 8px rgba(88,86,214,0.35);">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 4v16m8-8H4"></path></svg>
+                </button>
+
+                <!-- Right panel: Report + Settings -->
+                <div class="flex-1 flex items-center justify-around h-[58px] px-1 rounded-[1.5rem]
+                    bg-white/55 dark:bg-[#1a1a28]/55
+                    backdrop-blur-[28px] saturate-150
+                    border border-white/70 dark:border-white/15
+                    shadow-[0_4px_24px_rgba(0,0,0,0.10)]
+                    dark:shadow-[0_4px_24px_rgba(0,0,0,0.4)]">
+
+                    <button onclick="switchTab('report')" id="nav-report"
+                        class="nav-item flex flex-col items-center justify-center gap-0.5 w-[72px] py-1.5 rounded-[1.2rem] transition-all duration-300">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        <span class="text-[9px] font-semibold tracking-wide" data-i18n="report">Report</span>
+                    </button>
+
+                    <button onclick="switchTab('profile')" id="nav-profile"
+                        class="nav-item flex flex-col items-center justify-center gap-0.5 w-[72px] py-1.5 rounded-[1.2rem] transition-all duration-300">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        <span class="text-[9px] font-semibold tracking-wide" data-i18n="settings">Settings</span>
+                    </button>
+                </div>
+
             </div>
         </div>
+
 
 
         
