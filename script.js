@@ -9,6 +9,63 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        const auth = firebase.auth();
+        const googleProvider = new firebase.auth.GoogleAuthProvider();
+        let currentUser = null;
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('loginScreen').classList.add('opacity-0', 'pointer-events-none');
+                setTimeout(() => document.getElementById('loginScreen').classList.add('hidden'), 500);
+                
+                // Update UI Profile
+                document.getElementById('userName').innerText = user.displayName || 'User';
+                document.getElementById('homeUserName').innerText = user.displayName ? user.displayName.split(' ')[0] : 'User';
+                document.getElementById('userEmail').innerText = user.email || '';
+                
+                if (user.photoURL) {
+                    const img = document.getElementById('userPhoto');
+                    img.src = user.photoURL;
+                    img.classList.remove('hidden');
+                    document.getElementById('userInitials').classList.add('hidden');
+                }
+                
+                // Fetch user data
+                loadFromFirestore();
+            } else {
+                currentUser = null;
+                const loginScreen = document.getElementById('loginScreen');
+                loginScreen.classList.remove('hidden');
+                setTimeout(() => loginScreen.classList.remove('opacity-0', 'pointer-events-none'), 50);
+                
+                // Clear UI Data
+                transactions = [];
+                updateDashboard();
+                renderFullHistory();
+            }
+        });
+
+        function loginWithGoogle() {
+            auth.signInWithPopup(googleProvider).catch(error => {
+                showGlassNotif('Login Gagal', error.message, { type: 'error' });
+            });
+        }
+
+        async function logout() {
+            const confirmed = await showGlassNotif('Keluar', 'Apakah Anda yakin ingin keluar dari akun ini?', {
+                type: 'warning',
+                buttons: [{text: 'Batal'}, {text: 'Keluar', bold: true, isDestructive: true}]
+            });
+            if (confirmed) {
+                auth.signOut();
+            }
+        }
+
+        function getUserTransactionsRef() {
+            if (!currentUser) return null;
+            return db.collection('users').doc(currentUser.uid).collection('transactions');
+        }
 
         // --- CUSTOM GLASS NOTIFICATION SYSTEM (iOS Style) ---
         let glassNotifResolve = null;
@@ -129,7 +186,7 @@
 
         async function loadFromFirestore() {
             try {
-                const snapshot = await db.collection('transactions').get();
+                const snapshot = await getUserTransactionsRef().get();
                 transactions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 // Sort by date descending
                 transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -303,7 +360,6 @@
                 if (toggleBtn) toggleBtn.checked = true;
             }
             applyTranslations();
-            loadFromFirestore();
         }
 
         function toggleDarkMode() {
@@ -648,7 +704,7 @@
                 { confirmText: currentLang === 'id' ? 'Hapus' : 'Delete', cancelText: currentLang === 'id' ? 'Batal' : 'Cancel' }
             );
             if (result === 1) {
-                db.collection('transactions').doc(String(editingId)).delete();
+                getUserTransactionsRef().doc(String(editingId)).delete();
                 transactions = transactions.filter(t => t.id !== editingId);
                 updateDashboard();
                 if(!document.getElementById('fullHistoryScreen').classList.contains('translate-x-full')) renderFullHistory();
@@ -664,7 +720,7 @@
                 { confirmText: currentLang === 'id' ? 'Hapus' : 'Delete', cancelText: currentLang === 'id' ? 'Batal' : 'Cancel' }
             );
             if (result === 1) {
-                db.collection('transactions').doc(String(id)).delete();
+                getUserTransactionsRef().doc(String(id)).delete();
                 transactions = transactions.filter(t => t.id !== id);
                 updateDashboard();
                 if(!document.getElementById('fullHistoryScreen').classList.contains('translate-x-full')) renderFullHistory();
@@ -680,7 +736,7 @@
                 { confirmText: isId ? 'Hapus Semua' : 'Delete All', cancelText: isId ? 'Batal' : 'Cancel' }
             );
             if (result === 1) {
-                transactions.forEach(t => { db.collection('transactions').doc(String(t.id)).delete(); });
+                transactions.forEach(t => { getUserTransactionsRef().doc(String(t.id)).delete(); });
                 transactions = [];
                 updateDashboard();
                 if(!document.getElementById('fullHistoryScreen').classList.contains('translate-x-full')) renderFullHistory();
@@ -801,11 +857,11 @@
             
             const txData = { type, amount, category, date, note };
             if (editingId) {
-                db.collection('transactions').doc(String(editingId)).update(txData);
+                getUserTransactionsRef().doc(String(editingId)).update(txData);
                 const idx = transactions.findIndex(t => t.id === editingId);
                 if (idx !== -1) transactions[idx] = { id: editingId, ...txData };
             } else {
-                const newDocRef = db.collection('transactions').doc();
+                const newDocRef = getUserTransactionsRef().doc();
                 newDocRef.set(txData);
                 transactions.push({ id: newDocRef.id, ...txData });
             }
