@@ -271,7 +271,7 @@
             optionsData.forEach(opt => {
                 const isActive = opt.selected ? 'radio-active' : '';
                 const html = `
-                    <div onclick="selectOption('${opt.value}')" class="px-5 py-4 border-b border-gray-200/40 dark:border-white/10 flex justify-between items-center cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition radio-item ${isActive}">
+                    <div onclick="selectOption(this, '${opt.value}')" class="px-5 py-4 border-b border-gray-200/40 dark:border-white/10 flex justify-between items-center cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition radio-item ${isActive}">
                         <span class="font-extrabold text-[15px] text-gray-800 dark:text-white">${opt.label}</span>
                         <div class="radio-circle"></div>
                     </div>
@@ -288,9 +288,17 @@
             }, 10);
         }
 
-        function selectOption(val) {
-            if(optionCallback) optionCallback(val);
-            closeOptionsModal();
+        function selectOption(element, val) {
+            // Remove active state from any other option
+            document.querySelectorAll('#centralOptionsList .radio-item').forEach(el => el.classList.remove('radio-active'));
+            // Add active state to the clicked one
+            element.classList.add('radio-active');
+            
+            // Wait 250ms for the visual feedback before proceeding
+            setTimeout(() => {
+                if(optionCallback) optionCallback(val);
+                closeOptionsModal();
+            }, 250);
         }
 
         function closeOptionsModal(e) {
@@ -1266,14 +1274,16 @@
                 const doc = new jsPDF();
                 
                 // Title
-                doc.setFontSize(18);
-                doc.setTextColor(33, 37, 41);
+                doc.setFontSize(22);
+                doc.setFont(undefined, 'bold');
+                doc.setTextColor(15, 23, 42);
                 const title = source === 'transactions' ? (currentLang === 'id' ? 'Laporan Transaksi' : 'Transaction Report') : (currentLang === 'id' ? 'Laporan Tabungan' : 'Savings Report');
                 doc.text(title, 14, 22);
                 
                 // Subtitle (Period)
                 doc.setFontSize(11);
-                doc.setTextColor(108, 117, 125);
+                doc.setFont(undefined, 'normal');
+                doc.setTextColor(100, 116, 139);
                 let periodText = 'All Time';
                 if(timeFilter==='month') periodText = 'This Month';
                 if(timeFilter==='7days') periodText = 'Last 7 Days';
@@ -1287,23 +1297,50 @@
                 }
                 
                 doc.text(`${currentLang === 'id' ? 'Periode' : 'Period'}: ${periodText}`, 14, 30);
+                
+                // Header Line
+                doc.setDrawColor(226, 232, 240);
+                doc.setLineWidth(0.5);
+                doc.line(14, 36, 196, 36);
 
-                // Summary
+                // Summary Box
                 let totalIn = 0;
                 let totalOut = 0;
                 data.forEach(item => {
                     if (item.type === 'income' || item.type === 'nabung') totalIn += item.amount;
                     else totalOut += item.amount;
                 });
-                
-                doc.setFontSize(11);
-                doc.setTextColor(40, 167, 69);
-                doc.text(`${currentLang === 'id' ? 'Masuk' : 'In'}: Rp ${formatRp(totalIn)}`, 14, 40);
-                doc.setTextColor(220, 53, 69);
-                doc.text(`${currentLang === 'id' ? 'Keluar' : 'Out'}: Rp ${formatRp(totalOut)}`, 80, 40);
-                doc.setTextColor(0, 123, 255);
                 const net = totalIn - totalOut;
-                doc.text(`Net: Rp ${formatRp(net)}`, 146, 40);
+
+                doc.setFillColor(248, 250, 252);
+                doc.setDrawColor(226, 232, 240);
+                doc.roundedRect(14, 44, 182, 24, 3, 3, 'FD');
+
+                doc.setFontSize(10);
+                doc.setFont(undefined, 'bold');
+                
+                // In
+                doc.setTextColor(100, 116, 139);
+                doc.text(currentLang === 'id' ? 'TOTAL MASUK' : 'TOTAL IN', 20, 52);
+                doc.setFontSize(12);
+                doc.setTextColor(34, 197, 94);
+                doc.text(`Rp ${formatRp(totalIn)}`, 20, 60);
+                
+                // Out
+                doc.setFontSize(10);
+                doc.setTextColor(100, 116, 139);
+                doc.text(currentLang === 'id' ? 'TOTAL KELUAR' : 'TOTAL OUT', 85, 52);
+                doc.setFontSize(12);
+                doc.setTextColor(239, 68, 68);
+                doc.text(`Rp ${formatRp(totalOut)}`, 85, 60);
+                
+                // Net
+                doc.setFontSize(10);
+                doc.setTextColor(100, 116, 139);
+                doc.text(currentLang === 'id' ? 'SALDO BERSIH' : 'NET BALANCE', 150, 52);
+                doc.setFontSize(12);
+                doc.setTextColor(net >= 0 ? 59 : 239, net >= 0 ? 130 : 68, net >= 0 ? 246 : 68);
+                doc.text(`${net >= 0 ? '+' : '-'} Rp ${formatRp(Math.abs(net))}`, 150, 60);
 
                 // Table Data
                 const head = source === 'transactions' 
@@ -1321,14 +1358,32 @@
                 });
 
                 doc.autoTable({
-                    startY: 48,
+                    startY: 76,
                     head: head,
                     body: body,
-                    theme: 'striped',
-                    headStyles: { fillColor: [79, 70, 229] }, // Indigo color
-                    styles: { fontSize: 10, cellPadding: 4 },
-                    alternateRowStyles: { fillColor: [248, 249, 250] }
+                    theme: 'grid',
+                    headStyles: { fillColor: [15, 23, 42], textColor: 255, fontStyle: 'bold' },
+                    styles: { fontSize: 9, cellPadding: 5, textColor: [51, 65, 85] },
+                    alternateRowStyles: { fillColor: [248, 250, 252] },
+                    columnStyles: {
+                        2: { halign: 'center' },
+                        3: { halign: 'right', fontStyle: 'bold' }
+                    },
+                    margin: { top: 76 }
                 });
+
+                // Footer
+                const pageCount = doc.internal.getNumberOfPages();
+                doc.setFontSize(8);
+                doc.setFont(undefined, 'normal');
+                doc.setTextColor(148, 163, 184);
+                const generatedText = currentLang === 'id' ? 'Dibuat oleh Money Track pada' : 'Generated by Money Track on';
+                const today = new Date().toLocaleDateString(currentLang === 'id' ? 'id-ID' : 'en-US');
+                for (let i = 1; i <= pageCount; i++) {
+                    doc.setPage(i);
+                    doc.text(`${generatedText} ${today}`, 14, doc.internal.pageSize.height - 10);
+                    doc.text(`Page ${i} of ${pageCount}`, doc.internal.pageSize.width - 25, doc.internal.pageSize.height - 10);
+                }
 
                 doc.save(`MoneyTrack_${source}.pdf`);
             } catch (error) {
