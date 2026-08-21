@@ -46,15 +46,36 @@
             }
         });
 
-        // Tangkap error jika redirect gagal (misalnya karena setting privasi browser)
+        // Tangkap error jika redirect gagal (jika sempat terjadi)
         auth.getRedirectResult().catch(error => {
-            showGlassNotif('Login Error', error.message, { type: 'error' });
+            console.error("Redirect Error:", error);
         });
 
+        let isLoggingIn = false;
         function loginWithGoogle() {
-            // Mengubah Popup menjadi Redirect karena lebih stabil di HP & tidak diblokir browser
-            auth.signInWithRedirect(googleProvider).catch(error => {
-                showGlassNotif('Login Gagal', error.message, { type: 'error' });
+            if (isLoggingIn) return;
+            isLoggingIn = true;
+            
+            // Mengubah tombol menjadi state loading (warna abu-abu) agar tidak diklik dua kali
+            const btn = document.querySelector('button[onclick="loginWithGoogle()"]');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = 'Memuat... Tunggu Sebentar ⏳';
+            btn.classList.add('opacity-50', 'pointer-events-none');
+
+            auth.signInWithPopup(googleProvider).then(() => {
+                isLoggingIn = false;
+                // Jika sukses, onAuthStateChanged otomatis jalan
+            }).catch(error => {
+                isLoggingIn = false;
+                btn.innerHTML = originalHTML;
+                btn.classList.remove('opacity-50', 'pointer-events-none');
+                
+                // Pesan custom jika popup diblokir
+                if (error.code === 'auth/popup-blocked' || error.code === 'auth/cancelled-popup-request') {
+                    showGlassNotif('Popup Diblokir', 'Tolong izinkan pop-up di browser Anda, atau jangan tutup jendela login terlalu cepat.', { type: 'error' });
+                } else {
+                    showGlassNotif('Login Gagal', error.message, { type: 'error' });
+                }
             });
         }
 
