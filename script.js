@@ -430,7 +430,6 @@
             const toggleBtn = document.getElementById('darkModeToggle');
             isDark = document.documentElement.classList.contains('dark');
             if (toggleBtn) toggleBtn.checked = isDark;
-            applyTranslations();
         }
 
         function toggleDarkMode() {
@@ -1256,4 +1255,6 @@
             closeModal(); 
         });
 
+        // Apply language immediately before first paint
+        applyTranslations();
         window.onload = () => { initApp(); };
