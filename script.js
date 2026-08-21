@@ -315,39 +315,42 @@
         }
 
         function switchTab(tabId) {
+            if (currentTab === tabId) return; // skip if already on this tab
             currentTab = tabId;
-            document.querySelectorAll('.tab-content').forEach(el => { el.classList.add('hidden'); el.classList.remove('flex'); });
-            const activeTab = document.getElementById(`tab-${tabId}`);
-            if (activeTab) { activeTab.classList.remove('hidden'); activeTab.classList.add('flex'); }
-            
-            if(tabId === 'home' || tabId === 'report') {
-                document.querySelectorAll('.nav-item').forEach(el => {
-                    if(el.id === 'nav-add') return;
-                    el.classList.remove('nav-item-active');
-                    const svg = el.querySelector('svg'); const span = el.querySelector('span');
-                    svg.classList.remove('text-gray-900', 'dark:text-white'); svg.classList.add('text-gray-500', 'dark:text-gray-400');
-                    span.classList.remove('text-gray-900', 'dark:text-white'); span.classList.add('text-gray-500', 'dark:text-gray-400');
-                    if(el.id === 'nav-home') {
-                        svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" fill="none" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>';
-                        svg.setAttribute('stroke', 'currentColor'); svg.removeAttribute('fill');
-                    }
-                });
+            requestAnimationFrame(() => {
+                document.querySelectorAll('.tab-content').forEach(el => { el.classList.add('hidden'); el.classList.remove('flex'); });
+                const activeTab = document.getElementById(`tab-${tabId}`);
+                if (activeTab) { activeTab.classList.remove('hidden'); activeTab.classList.add('flex'); }
                 
-                const activeBtn = document.getElementById(`nav-${tabId}`);
-                if (activeBtn) {
-                    activeBtn.classList.add('nav-item-active');
-                    const activeSvg = activeBtn.querySelector('svg'); const activeSpan = activeBtn.querySelector('span');
-                    activeSvg.classList.remove('text-gray-500', 'dark:text-gray-400'); activeSvg.classList.add('text-gray-900', 'dark:text-white');
-                    activeSpan.classList.remove('text-gray-500', 'dark:text-gray-400'); activeSpan.classList.add('text-gray-900', 'dark:text-white');
+                if(tabId === 'home' || tabId === 'report') {
+                    document.querySelectorAll('.nav-item').forEach(el => {
+                        if(el.id === 'nav-add') return;
+                        el.classList.remove('nav-item-active');
+                        const svg = el.querySelector('svg'); const span = el.querySelector('span');
+                        svg.classList.remove('text-gray-900', 'dark:text-white'); svg.classList.add('text-gray-500', 'dark:text-gray-400');
+                        span.classList.remove('text-gray-900', 'dark:text-white'); span.classList.add('text-gray-500', 'dark:text-gray-400');
+                        if(el.id === 'nav-home') {
+                            svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" fill="none" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>';
+                            svg.setAttribute('stroke', 'currentColor'); svg.removeAttribute('fill');
+                        }
+                    });
+                    
+                    const activeBtn = document.getElementById(`nav-${tabId}`);
+                    if (activeBtn) {
+                        activeBtn.classList.add('nav-item-active');
+                        const activeSvg = activeBtn.querySelector('svg'); const activeSpan = activeBtn.querySelector('span');
+                        activeSvg.classList.remove('text-gray-500', 'dark:text-gray-400'); activeSvg.classList.add('text-gray-900', 'dark:text-white');
+                        activeSpan.classList.remove('text-gray-500', 'dark:text-gray-400'); activeSpan.classList.add('text-gray-900', 'dark:text-white');
 
-                    if(tabId === 'home') {
-                        activeSvg.innerHTML = '<path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>';
-                        activeSvg.setAttribute('fill', 'currentColor'); activeSvg.removeAttribute('stroke');
+                        if(tabId === 'home') {
+                            activeSvg.innerHTML = '<path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>';
+                            activeSvg.setAttribute('fill', 'currentColor'); activeSvg.removeAttribute('stroke');
+                        }
                     }
                 }
-            }
-            if (tabId === 'report') renderReport();
-            if (tabId === 'home') updateDashboard();
+                if (tabId === 'report') renderReport();
+                if (tabId === 'home') updateDashboard();
+            });
         }
 
         function updateDashboard() {

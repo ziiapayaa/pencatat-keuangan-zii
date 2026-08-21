@@ -1,6 +1,20 @@
         body { -webkit-tap-highlight-color: transparent; }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* --- PERFORMANCE OPTIMIZATIONS --- */
+        .tab-content {
+            will-change: opacity;
+            transform: translateZ(0);
+            contain: layout style;
+        }
+        .glass, .glass-card {
+            transform: translateZ(0);
+        }
+        .animate-blob {
+            backface-visibility: hidden;
+            perspective: 1000px;
+        }
         
         /* Animasi Modal Bawah */
         .modal-enter { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
