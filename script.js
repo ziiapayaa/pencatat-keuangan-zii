@@ -168,7 +168,7 @@
 
         const i18n = {
             id: {
-                home: 'Beranda', add: 'Tambah', report: 'Laporan', settings: 'Pengaturan',
+                home: 'Beranda', add: 'Tambah', report: 'Laporan', settings: 'Pengaturan', saving: 'Tabungan',
                 greeting: 'Halo,', totalBalance: 'Saldo Total', income: 'Pemasukan', expense: 'Pengeluaran',
                 historyTitle: 'Riwayat Transaksi', seeAll: 'Lihat Semua',
                 reportTitle: 'Laporan Keuangan', expensePerCat: 'Pengeluaran Per Kategori', expenseDetail: 'Rincian Pengeluaran',
@@ -176,24 +176,32 @@
                 filter7Days: '7 Hari Terakhir', filter30Days: '30 Hari Terakhir', filterMonth: 'Bulan Ini', filterAllTime: 'Semua Waktu',
                 filterAllType: 'Semua Tipe', typeInc: 'Pemasukan', typeExp: 'Pengeluaran',
                 addTx: 'Tambah Data', editTx: 'Edit Data', amount: 'JUMLAH (RP)', category: 'KATEGORI', date: 'TANGGAL', note: 'CATATAN',
-                saveBtn: 'Simpan Transaksi', updateBtn: 'Update',
+                saveBtn: 'Simpan Data', updateBtn: 'Update',
                 emptyTx: 'Belum ada transaksi.', noNote: 'Tidak ada catatan', outLabel: 'KELUAR', inLabel: 'MASUK',
                 food: 'Makanan', transport: 'Transportasi', shopping: 'Belanja', bills: 'Tagihan', entertainment: 'Hiburan',
-                salary: 'Gaji', bonus: 'Bonus', investment: 'Investasi', gift: 'Hadiah', other: 'Lainnya', add_new: '+ Tambah Baru'
+                salary: 'Gaji', bonus: 'Bonus', investment: 'Investasi', gift: 'Hadiah', other: 'Lainnya', add_new: '+ Tambah Baru',
+                totalSaving: 'Total Tabungan', savingIn: 'Setor', savingOut: 'Tarik', savingHistory: 'Riwayat Tabungan', noData: 'Belum ada data.',
+                addSavingBtn: 'Catat Tabungan', addSavingDesc: 'Nabung atau tarik dana', actionSheetTitle: 'Pilih Transaksi', addSavingTitle: 'Catat Tabungan',
+                savingNabung: 'Nabung', savingTarik: 'Tarik Dana', editSavingTitle: 'Edit Tabungan', updateSuccess: 'Data diperbarui.', addSuccess: 'Data disimpan.',
+                deleteConfirm: 'Apakah Anda yakin ingin menghapus data ini?', deleteSuccess: 'Data dihapus.', success: 'Berhasil', error: 'Gagal'
             },
             en: {
-                home: 'Home', add: 'Add', report: 'Report', settings: 'Settings',
+                home: 'Home', add: 'Add', report: 'Report', settings: 'Settings', saving: 'Savings',
                 greeting: 'Hello,', totalBalance: 'Total Balance', income: 'Income', expense: 'Expense',
                 historyTitle: 'Transaction History', seeAll: 'See All',
                 reportTitle: 'Financial Report', expensePerCat: 'Expense by Category', expenseDetail: 'Expense Breakdown',
                 exportCsv: 'Export CSV', importCsv: 'Import CSV', darkMode: 'Dark Mode', language: 'Language', resetData: 'Clear All Data',
                 filter7Days: 'Last 7 Days', filter30Days: 'Last 30 Days', filterMonth: 'This Month', filterAllTime: 'All Time',
                 filterAllType: 'All Types', typeInc: 'Income', typeExp: 'Expense',
-                addTx: 'Add Transaction', editTx: 'Edit Data', amount: 'AMOUNT (RP)', category: 'CATEGORY', date: 'DATE', note: 'NOTE',
-                saveBtn: 'Save Transaction', updateBtn: 'Update',
+                addTx: 'Add Transaction', editTx: 'Edit Data', amount: 'AMOUNT', category: 'CATEGORY', date: 'DATE', note: 'NOTE',
+                saveBtn: 'Save Data', updateBtn: 'Update',
                 emptyTx: 'No transactions yet.', noNote: 'No note', outLabel: 'OUT', inLabel: 'IN',
                 food: 'Food', transport: 'Transport', shopping: 'Shopping', bills: 'Bills', entertainment: 'Entertainment',
-                salary: 'Salary', bonus: 'Bonus', investment: 'Investment', gift: 'Gift', other: 'Other', add_new: '+ Add New'
+                salary: 'Salary', bonus: 'Bonus', investment: 'Investment', gift: 'Gift', other: 'Other', add_new: '+ Add New',
+                totalSaving: 'Total Savings', savingIn: 'Deposit', savingOut: 'Withdraw', savingHistory: 'Savings History', noData: 'No data available.',
+                addSavingBtn: 'Record Saving', addSavingDesc: 'Deposit or withdraw funds', actionSheetTitle: 'Choose Transaction', addSavingTitle: 'Record Saving',
+                savingNabung: 'Deposit', savingTarik: 'Withdraw', editSavingTitle: 'Edit Saving', updateSuccess: 'Data updated.', addSuccess: 'Data saved.',
+                deleteConfirm: 'Are you sure you want to delete this data?', deleteSuccess: 'Data deleted.', success: 'Success', error: 'Error'
             }
         };
 
