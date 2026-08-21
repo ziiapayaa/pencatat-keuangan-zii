@@ -1,3 +1,15 @@
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyClZG90OVAElY5D_-lKStgnh3TMesjvQ7w",
+          authDomain: "pencatat-keuangan-zii.firebaseapp.com",
+          projectId: "pencatat-keuangan-zii",
+          storageBucket: "pencatat-keuangan-zii.firebasestorage.app",
+          messagingSenderId: "405630946174",
+          appId: "1:405630946174:web:395a00e2180da6f69ac12f"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
         const i18n = {
             id: {
                 home: 'Beranda', add: 'Tambah', report: 'Laporan', settings: 'Pengaturan',
@@ -45,17 +57,21 @@
         let activeTimeFilter = '30days';
         let activeTypeFilter = 'all';
 
-        const initialDummy = [
-            { id: 1, type: 'income', amount: 5000000, category: 'salary', date: new Date().toISOString().split('T')[0], note: '' },
-            { id: 2, type: 'expense', amount: 150000, category: 'food', date: new Date().toISOString().split('T')[0], note: '' },
-            { id: 3, type: 'expense', amount: 50000, category: 'shopping', date: new Date(Date.now() - 86400000).toISOString().split('T')[0], note: '' },
-            { id: 4, type: 'income', amount: 100000, category: 'bonus', date: new Date(Date.now() - (86400000 * 2)).toISOString().split('T')[0], note: '' },
-            { id: 5, type: 'expense', amount: 20000, category: 'transport', date: new Date(Date.now() - (86400000 * 2)).toISOString().split('T')[0], note: '' }
-        ];
+        let transactions = [];
 
-        let transactions = JSON.parse(localStorage.getItem('catatuang_transactions')) || initialDummy;
-
-        function saveToLocalStorage() { localStorage.setItem('catatuang_transactions', JSON.stringify(transactions)); }
+        async function loadFromFirestore() {
+            try {
+                const snapshot = await db.collection('transactions').get();
+                transactions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                // Sort by date descending
+                transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+                updateDashboard();
+                if(!document.getElementById('fullHistoryScreen').classList.contains('translate-x-full')) renderFullHistory();
+                if (currentTab === 'report') renderReport();
+            } catch(e) {
+                console.error("Error loading documents: ", e);
+            }
+        }
         
         const formatRp = (num) => new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0 }).format(num);
         const formatDateText = (dateObj, format='short') => {
@@ -219,6 +235,7 @@
                 if (toggleBtn) toggleBtn.checked = true;
             }
             applyTranslations();
+            loadFromFirestore();
         }
 
         function toggleDarkMode() {
@@ -698,14 +715,18 @@
                 }
             }
             
+            const txData = { type, amount, category, date, note };
             if (editingId) {
+                db.collection('transactions').doc(String(editingId)).update(txData);
                 const idx = transactions.findIndex(t => t.id === editingId);
-                if (idx !== -1) transactions[idx] = { ...transactions[idx], type, amount, category, date, note };
+                if (idx !== -1) transactions[idx] = { id: editingId, ...txData };
             } else {
-                transactions.push({ id: Date.now(), type, amount, category, date, note });
+                const newDocRef = db.collection('transactions').doc();
+                newDocRef.set(txData);
+                transactions.push({ id: newDocRef.id, ...txData });
             }
             
-            saveToLocalStorage(); updateDashboard(); 
+            updateDashboard(); 
             if(!document.getElementById('fullHistoryScreen').classList.contains('translate-x-full')) renderFullHistory();
             if (currentTab === 'report') renderReport(); 
             closeModal(); 
