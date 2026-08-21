@@ -46,6 +46,11 @@
             }
         });
 
+        // Tangkap error jika redirect gagal (misalnya karena setting privasi browser)
+        auth.getRedirectResult().catch(error => {
+            showGlassNotif('Login Error', error.message, { type: 'error' });
+        });
+
         function loginWithGoogle() {
             // Mengubah Popup menjadi Redirect karena lebih stabil di HP & tidak diblokir browser
             auth.signInWithRedirect(googleProvider).catch(error => {
