@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CatatUang - Premium Centered Menu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="tailwind.config.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-[#f4f6fb] dark:bg-darkBg text-gray-800 dark:text-gray-100 antialiased font-sans flex justify-center transition-colors duration-500 overflow-hidden h-screen">
+
+    <!-- Ambient Background Bubbles -->
+    <div class="fixed inset-0 w-full flex justify-center z-0 overflow-hidden pointer-events-none">
+        <div class="w-full max-w-md relative h-full">
+            <div class="absolute top-[-5%] left-[-10%] w-72 h-72 bg-pink-300 dark:bg-pink-900/60 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[80px] opacity-60 animate-blob"></div>
+            <div class="absolute top-[20%] right-[-10%] w-72 h-72 bg-purple-300 dark:bg-purple-900/60 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[80px] opacity-60 animate-blob animation-delay-2000"></div>
+            <div class="absolute bottom-[-5%] left-[10%] w-80 h-80 bg-indigo-300 dark:bg-emerald-600/40 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[100px] opacity-70 animate-blob animation-delay-4000"></div>
+        </div>
+    </div>
+
+    <!-- Mobile Container -->
+    <div class="w-full max-w-md h-full relative z-10 flex flex-col">
+        
+        <!-- ==================== TABS CONTAINER ==================== -->
+        <div class="flex-1 w-full relative overflow-hidden flex flex-col min-h-0">
+            
+            <!-- --- TAB 1: HOME --- -->
+            <div id="tab-home" class="tab-content flex-1 flex flex-col tab-enter overflow-y-auto hide-scrollbar pb-28 min-h-0">
+                <!-- HEADER & SUMMARY CARD -->
+                <div class="glass rounded-[2rem] p-5 z-10 mx-3 mt-5 mb-4 shadow-xl shrink-0">
+                    <div class="mb-5 flex justify-between items-center">
+                        <div>
+                            <h1 class="text-[22px] font-extrabold tracking-tight">CatatUang</h1>
+                            <p class="text-gray-500 dark:text-gray-400 text-[10px] mt-0.5 font-bold tracking-widest uppercase" data-i18n="greeting">Halo, Zii!</p>
+                        </div>
+                        <button onclick="switchTab('profile')" class="bg-indigo-100 dark:bg-white/10 p-2 rounded-xl text-indigo-600 dark:text-white/80 border border-transparent dark:border-white/10 hover:bg-indigo-200 dark:hover:bg-white/20 transition-colors shadow-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        </button>
+                    </div>
+
+                    <div class="mb-5">
+                        <p class="text-gray-500 dark:text-gray-400 text-[11px] font-bold mb-0.5 tracking-wider uppercase" data-i18n="totalBalance">Saldo Total</p>
+                        <h2 class="text-[34px] leading-tight font-black tracking-tight text-gray-900 dark:text-white drop-shadow-sm truncate" id="totalBalance">Rp 0</h2>
+                    </div>
+
+                    <div class="flex gap-2.5">
+                        <div class="flex-1 bg-white/70 dark:bg-white/5 rounded-[1.25rem] p-2.5 flex items-center gap-2.5 border border-white/80 dark:border-white/10 shadow-sm min-w-0">
+                            <div class="w-9 h-9 shrink-0 flex items-center justify-center bg-green-100/80 dark:bg-green-500/20 rounded-[10px]">
+                                <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m0 0l-4-4m4 4l4-4"></path></svg>
+                            </div>
+                            <div class="flex flex-col min-w-0">
+                                <p class="text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-0.5 truncate" data-i18n="income">Pemasukan</p>
+                                <p class="text-[13px] font-extrabold truncate text-gray-900 dark:text-white drop-shadow-sm tracking-tight" id="totalIncome">Rp 0</p>
+                            </div>
+                        </div>
+                        <div class="flex-1 bg-white/70 dark:bg-white/5 rounded-[1.25rem] p-2.5 flex items-center gap-2.5 border border-white/80 dark:border-white/10 shadow-sm min-w-0">
+                            <div class="w-9 h-9 shrink-0 flex items-center justify-center bg-red-100/80 dark:bg-red-500/20 rounded-[10px]">
+                                <svg class="w-4 h-4 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 20V4m0 0l-4 4m4-4l4 4"></path></svg>
+                            </div>
+                            <div class="flex flex-col min-w-0">
+                                <p class="text-[9px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-0.5 truncate" data-i18n="expense">Pengeluaran</p>
+                                <p class="text-[13px] font-extrabold truncate text-gray-900 dark:text-white drop-shadow-sm tracking-tight" id="totalExpense">Rp 0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UNIFIED TRANSACTION BOX -->
+                <div class="px-3 shrink-0">
+                    <div class="glass-card rounded-[2rem] p-4 flex flex-col shadow-sm">
+                        <div class="flex justify-between items-end mb-3 px-1.5">
+                            <h3 class="font-extrabold text-[16px] text-gray-900 dark:text-white tracking-wide drop-shadow-sm" data-i18n="historyTitle">Riwayat Transaksi</h3>
+                        </div>
+                        <div id="recentTransactionList" class="space-y-2">
+                            <!-- Data diinjeksi via JS -->
+                        </div>
+                        <button onclick="openHistoryScreen()" class="mt-4 pt-4 pb-1 border-t border-gray-300/40 dark:border-white/10 w-full flex justify-center items-center gap-1.5 text-indigo-600 dark:text-emerald-400 font-extrabold text-[13px] hover:opacity-70 transition-opacity">
+                            <span data-i18n="seeAll">Lihat Semua</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- --- TAB 2: LAPORAN (FEED) --- -->
+            <div id="tab-report" class="tab-content hidden flex-col flex-1 px-4 pt-6 pb-28 overflow-y-auto hide-scrollbar tab-enter z-10 min-h-0">
+                <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white mb-4 drop-shadow-sm px-1" data-i18n="reportTitle">Laporan Keuangan</h2>
+                <div class="glass-card rounded-[2rem] p-5 mb-4 shadow-sm shrink-0">
+                    <h3 class="text-xs font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-4" data-i18n="expensePerCat">Pengeluaran Per Kategori</h3>
+                    <div class="relative h-48 w-full flex items-center justify-center">
+                        <canvas id="reportChart"></canvas>
+                    </div>
+                </div>
+                <div class="glass-card rounded-[2rem] p-5 shadow-sm mb-4 shrink-0">
+                    <h3 class="text-xs font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-3" data-i18n="expenseDetail">Rincian Pengeluaran</h3>
+                    <div id="categoryBreakdownList" class="space-y-3">
+                        <!-- Breakdown item -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- --- TAB 3: SETTINGS --- -->
+            <div id="tab-profile" class="tab-content hidden flex-col flex-1 px-4 pt-8 pb-28 overflow-y-auto hide-scrollbar tab-enter z-10 min-h-0">
+                <div class="flex items-center gap-3 mb-6 px-1">
+                    <button onclick="switchTab('home')" class="p-2.5 bg-white/60 dark:bg-black/20 backdrop-blur-md rounded-full hover:bg-white/90 dark:hover:bg-black/40 transition shadow-sm border border-white/40 dark:border-white/10">
+                        <svg class="w-5 h-5 text-gray-800 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                    </button>
+                    <h2 class="text-2xl font-extrabold text-gray-900 dark:text-white drop-shadow-sm" data-i18n="settings">Pengaturan</h2>
+                </div>
+                
+                <div class="glass-card rounded-[2rem] p-6 mb-4 flex items-center gap-4 shrink-0">
+                    <div class="w-16 h-16 bg-gradient-to-tr from-indigo-500 to-emerald-500 rounded-full flex items-center justify-center text-white text-2xl font-black shadow-lg border-2 border-white/50">Z</div>
+                    <div>
+                        <h3 class="text-xl font-extrabold text-gray-900 dark:text-white">Zii</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">Pengelola Keuangan</p>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-[2rem] flex flex-col overflow-hidden mb-6 shrink-0 relative">
+                    
+                    <!-- Trigger Central Menu: Language -->
+                    <div onclick="showLangOptions()" class="flex items-center justify-between p-4 border-b border-gray-300/30 dark:border-white/10 hover:bg-white/40 dark:hover:bg-white/5 transition cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-blue-100 dark:bg-white/10 p-2 rounded-lg text-blue-600 dark:text-white">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
+                            </div>
+                            <span class="font-bold text-sm text-gray-800 dark:text-gray-200" data-i18n="language">Bahasa</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span id="langDisplay" class="text-sm font-extrabold text-gray-500 dark:text-gray-400">Indonesia</span>
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </div>
+
+                    <!-- Export CSV -->
+                    <button onclick="exportCSV()" class="flex items-center justify-between p-4 border-b border-gray-300/30 dark:border-white/10 hover:bg-white/40 dark:hover:bg-white/5 transition text-left w-full">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-green-100 dark:bg-white/10 p-2 rounded-lg text-green-600 dark:text-white">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            </div>
+                            <span class="font-bold text-sm text-gray-800 dark:text-gray-200" data-i18n="exportCsv">Ekspor Laporan CSV</span>
+                        </div>
+                    </button>
+
+                    <!-- Import CSV (FITUR BARU: pasangan dari export yang sebelumnya cuma 1 arah) -->
+                    <button onclick="triggerImportCSV()" class="flex items-center justify-between p-4 border-b border-gray-300/30 dark:border-white/10 hover:bg-white/40 dark:hover:bg-white/5 transition text-left w-full">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-blue-100 dark:bg-white/10 p-2 rounded-lg text-blue-600 dark:text-white">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 14V4m0 0L9 7m3-3l3 3m-2 4H7a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-3"></path></svg>
+                            </div>
+                            <span class="font-bold text-sm text-gray-800 dark:text-gray-200" data-i18n="importCsv">Impor Data CSV</span>
+                        </div>
+                    </button>
+                    <input type="file" id="csvImportInput" accept=".csv" class="hidden" onchange="importCSV(event)">
+
+                    <!-- Dark Mode -->
+                    <div class="flex items-center justify-between p-4 border-b border-gray-300/30 dark:border-white/10">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-indigo-100 dark:bg-white/10 p-2 rounded-lg text-indigo-600 dark:text-white">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                            </div>
+                            <span class="font-bold text-sm text-gray-800 dark:text-gray-200" data-i18n="darkMode">Mode Gelap</span>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="darkModeToggle" class="sr-only peer" onchange="toggleDarkMode()">
+                            <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500"></div>
+                        </label>
+                    </div>
+
+                    <!-- Reset -->
+                    <button onclick="resetData()" class="flex items-center justify-between p-4 hover:bg-red-500/10 transition text-left w-full">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-red-100 dark:bg-red-500/20 p-2 rounded-lg text-red-600 dark:text-red-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </div>
+                            <span class="font-bold text-sm text-red-600 dark:text-red-400" data-i18n="resetData">Hapus Semua Data</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- ==================== SLIM FLOATING NAVBAR ==================== -->
+        <div class="fixed bottom-5 left-0 right-0 z-30 w-full flex justify-center px-6 pointer-events-none">
+            <div class="w-full max-w-[310px] relative pointer-events-auto">
+                <div class="absolute -bottom-1 inset-x-4 h-10 bg-emerald-500/20 blur-[20px] rounded-full z-0 opacity-0 dark:opacity-100 pointer-events-none transition-opacity duration-500"></div>
+                <div class="relative z-10 w-full bg-white/70 dark:bg-[#1f1f1f]/75 backdrop-blur-3xl border border-white/60 dark:border-white/10 rounded-[2rem] p-1.5 flex justify-between items-center shadow-lg">
+                    
+                    <button onclick="switchTab('home')" class="nav-item nav-item-active w-1/3 py-2 flex flex-col items-center gap-0.5 rounded-[1.7rem]" id="nav-home">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+                        <span class="text-[10px] font-bold tracking-wide" data-i18n="home">Beranda</span>
+                    </button>
+
+                    <button onclick="openAddModal()" class="nav-item w-1/3 py-2 flex flex-col items-center gap-0.5 rounded-[1.7rem] hover:bg-black/5 dark:hover:bg-white/5" id="nav-add">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
+                        <span class="text-[10px] font-bold tracking-wide" data-i18n="add">Tambah</span>
+                    </button>
+
+                    <button onclick="switchTab('report')" class="nav-item w-1/3 py-2 flex flex-col items-center gap-0.5 rounded-[1.7rem] hover:bg-black/5 dark:hover:bg-white/5" id="nav-report">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        <span class="text-[10px] font-bold tracking-wide" data-i18n="report">Laporan</span>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== FULL SCREEN MODAL: TRANSACTION HISTORY ==================== -->
+        <div id="fullHistoryScreen" class="fixed inset-0 z-[80] bg-[#f4f6fb]/80 dark:bg-darkBg/80 backdrop-blur-3xl flex flex-col transition-transform duration-400 ease-out translate-x-full">
+            
+            <div class="flex items-center justify-between px-5 py-4 pt-8 z-10 border-b border-white/40 dark:border-white/10 shadow-sm shrink-0">
+                <button onclick="closeHistoryScreen()" class="glass-card p-2 rounded-full hover:bg-white/80 dark:hover:bg-white/20 transition shadow-sm active:scale-95">
+                    <svg class="w-5 h-5 text-gray-800 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <h2 class="text-lg font-extrabold text-gray-900 dark:text-white tracking-wide drop-shadow-sm flex-1 text-center pr-8" data-i18n="historyTitle">Riwayat Transaksi</h2>
+            </div>
+
+            <div class="flex gap-3 px-4 mt-5 mb-4 z-10 shrink-0">
+                <!-- Time Filter Trigger -->
+                <div onclick="showTimeOptions()" class="glass-card flex-1 py-3 px-4 rounded-[1.2rem] flex justify-between items-center cursor-pointer shadow-sm active:scale-95 transition-transform">
+                    <span id="filterTimeDisplay" class="text-[11px] font-extrabold text-gray-800 dark:text-gray-200 tracking-wide" data-i18n="filter30Days">30 Hari Terakhir</span>
+                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+                <!-- Type Filter Trigger -->
+                <div onclick="showTypeOptions()" class="glass-card flex-1 py-3 px-4 rounded-[1.2rem] flex justify-between items-center cursor-pointer shadow-sm active:scale-95 transition-transform">
+                    <span id="filterTypeDisplay" class="text-[11px] font-extrabold text-gray-800 dark:text-gray-200 tracking-wide" data-i18n="filterAllType">Semua Tipe</span>
+                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto px-4 pb-20 z-10 space-y-6 hide-scrollbar" id="fullHistoryList">
+                <!-- Data diinjeksi via JS -->
+            </div>
+        </div>
+
+        <!-- ==================== MODAL FORM ADD/EDIT ==================== -->
+        <div id="modalOverlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[110] hidden transition-opacity duration-300"></div>
+        
+        <div id="transactionModal" class="fixed inset-x-0 bottom-0 z-[120] glass rounded-t-[2.5rem] hidden flex flex-col max-h-[95vh] mx-0 md:mx-auto max-w-md border-b-0 shadow-[0_-10px_40px_rgba(0,0,0,0.3)]">
+            <div class="p-6 overflow-y-auto hide-scrollbar">
+                <div class="w-12 h-1.5 bg-gray-300 dark:bg-gray-600 rounded-full mx-auto mb-6"></div>
+
+                <div class="flex justify-between items-center mb-6">
+                    <h3 id="modalTitle" class="text-xl font-extrabold text-gray-900 dark:text-white" data-i18n="addTx">Tambah Data</h3>
+                    <button onclick="closeModal()" class="text-gray-600 dark:text-gray-300 bg-white/60 dark:bg-black/40 p-2 rounded-full hover:bg-white/90 dark:hover:bg-black/60 transition backdrop-blur-md shadow-sm border border-white/40 dark:border-white/10">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+
+                <form id="transactionForm" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-2 p-1.5 bg-white/50 dark:bg-black/30 backdrop-blur-md rounded-[1.25rem] border border-white/50 dark:border-white/5 shadow-inner">
+                        <label class="cursor-pointer relative">
+                            <input type="radio" name="type" value="expense" class="peer sr-only" checked onchange="updateCategoryState()">
+                            <div class="text-center py-2.5 rounded-[1rem] text-[13px] font-bold peer-checked:bg-white dark:peer-checked:bg-slate-700 peer-checked:text-red-500 peer-checked:shadow-md text-gray-500 dark:text-gray-400 transition-all duration-300" data-i18n="typeExp">Pengeluaran</div>
+                        </label>
+                        <label class="cursor-pointer relative">
+                            <input type="radio" name="type" value="income" class="peer sr-only" onchange="updateCategoryState()">
+                            <div class="text-center py-2.5 rounded-[1rem] text-[13px] font-bold peer-checked:bg-white dark:peer-checked:bg-slate-700 peer-checked:text-green-500 peer-checked:shadow-md text-gray-500 dark:text-gray-400 transition-all duration-300" data-i18n="typeInc">Pemasukan</div>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-extrabold text-gray-500 dark:text-gray-400 mb-1.5 ml-1 tracking-widest" data-i18n="amount">JUMLAH (RP)</label>
+                        <!-- Mengganti type="number" menjadi text agar format Rupiah berfungsi -->
+                        <input type="text" inputmode="numeric" id="amount" required placeholder="0" oninput="formatInputRupiah(this)" class="w-full px-5 py-3.5 glass-input rounded-2xl outline-none focus:ring-2 focus:ring-indigo-400 font-black text-2xl transition-all shadow-sm text-gray-900 dark:text-white">
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-extrabold text-gray-500 dark:text-gray-400 mb-1.5 ml-1 tracking-widest" data-i18n="category">KATEGORI</label>
+                        <!-- Trigger Central Menu: Category -->
+                        <div class="relative w-full">
+                            <input type="hidden" id="categorySelect" value="food">
+                            <div onclick="showCategoryOptions()" class="w-full px-5 py-3.5 glass-input rounded-2xl flex justify-between items-center cursor-pointer shadow-sm active:scale-[0.98] transition-transform">
+                                <span id="categoryDisplay" class="font-bold text-[14px] text-gray-800 dark:text-white" data-i18n="food">Makanan</span>
+                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                            <input type="text" id="customCategory" placeholder="..." class="hidden mt-2 w-full px-5 py-3 glass-input rounded-2xl outline-none focus:ring-2 focus:ring-indigo-400 transition-all shadow-sm font-bold text-sm text-gray-800 dark:text-white">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[10px] font-extrabold text-gray-500 dark:text-gray-400 mb-1.5 ml-1 tracking-widest" data-i18n="date">TANGGAL</label>
+                            <input type="date" id="date" required class="w-full px-4 py-3 glass-input rounded-2xl outline-none focus:ring-2 focus:ring-indigo-400 text-[13px] transition-all shadow-sm font-bold text-gray-800 dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-extrabold text-gray-500 dark:text-gray-400 mb-1.5 ml-1 tracking-widest" data-i18n="note">CATATAN</label>
+                            <input type="text" id="note" placeholder="..." class="w-full px-4 py-3 glass-input rounded-2xl outline-none focus:ring-2 focus:ring-indigo-400 text-[13px] transition-all shadow-sm font-bold text-gray-800 dark:text-white">
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 mt-6">
+                        <button type="button" id="deleteBtn" onclick="deleteCurrentTransaction()" class="hidden bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400 font-extrabold px-5 py-3.5 rounded-2xl active:scale-95 transition-all shadow-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                        <button type="submit" id="submitBtn" class="flex-1 bg-indigo-600/95 dark:bg-emerald-500/90 hover:bg-indigo-700 backdrop-blur-md border border-white/20 text-white font-extrabold py-3.5 rounded-2xl shadow-[0_4px_20px_rgba(79,70,229,0.3)] dark:shadow-[0_4px_20px_rgba(16,185,129,0.3)] active:scale-[0.98] transition-all text-[14px] tracking-wide uppercase" data-i18n="saveBtn">
+                            Simpan Transaksi
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ==================== UNIVERSAL CENTERED MODAL (For Dropdowns) ==================== -->
+        <div id="centralOptionsOverlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[200] hidden flex items-center justify-center p-6 transition-opacity duration-300 opacity-0" onclick="closeOptionsModal(event)">
+            <div id="centralOptionsContent" class="w-full max-w-[320px] glass-card rounded-[1.8rem] flex flex-col overflow-hidden transform scale-95 transition-transform duration-300 shadow-2xl" onclick="event.stopPropagation()">
+                <div id="centralOptionsList" class="flex flex-col max-h-[60vh] overflow-y-auto hide-scrollbar"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
