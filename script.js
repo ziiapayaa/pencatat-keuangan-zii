@@ -222,6 +222,7 @@
         let activeTypeFilter = 'all';
 
         let transactions = [];
+        let savingsData = [];
 
         async function loadFromFirestore() {
             try {
@@ -517,58 +518,163 @@
                 let totalSaving = 0;
                 let totalIn = 0;
                 let totalOut = 0;
-                let listHtml = '';
                 
-                if (snapshot.empty) {
-                    document.getElementById('savingList').innerHTML = `<div class="flex items-center justify-center h-20"><p class="text-sm font-bold text-gray-400 dark:text-gray-500">${tText('noData')||'Belum ada data.'}</p></div>`;
-                    document.getElementById('totalSavingBal').innerText = 'Rp 0';
-                    document.getElementById('savingIncome').innerText = 'Rp 0';
-                    document.getElementById('savingExpense').innerText = 'Rp 0';
-                    return;
-                }
+                savingsData = [];
 
                 snapshot.forEach(doc => {
                     const data = doc.data();
                     const amount = parseFloat(data.amount);
-                    
-                    if (data.type === 'in') {
-                        totalSaving += amount;
-                        totalIn += amount;
-                    } else {
-                        totalSaving -= amount;
-                        totalOut += amount;
-                    }
+                    if (data.type === 'in') { totalSaving += amount; totalIn += amount; } 
+                    else { totalSaving -= amount; totalOut += amount; }
+                    savingsData.push({ id: doc.id, ...data });
+                });
 
-                    const isIncome = data.type === 'in';
-                    const colorClass = isIncome ? 'text-emerald-500' : 'text-red-500';
-                    const iconBg = isIncome ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400';
-                    const iconPath = isIncome ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m0 0l-4-4m4 4l4-4"></path>' : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m0 0l-4-4m4 4l4-4" transform="rotate(180 12 12)"></path>';
-                    const titleText = isIncome ? 'Nabung' : 'Tarik Dana';
+                document.getElementById('totalSavingBal').innerText = 'Rp ' + totalSaving.toLocaleString('id-ID');
+                document.getElementById('savingIncome').innerText = 'Rp ' + totalIn.toLocaleString('id-ID');
+                document.getElementById('savingExpense').innerText = 'Rp ' + totalOut.toLocaleString('id-ID');
 
-                    listHtml += `
-                        <div onclick="openSavingModal('${doc.id}')" class="glass-card rounded-[1.25rem] p-3.5 flex items-center justify-between cursor-pointer hover:bg-white/80 dark:hover:bg-black/30 transition shadow-sm border border-white/60 dark:border-white/5 active:scale-[0.98]">
-                            <div class="flex items-center gap-3.5">
-                                <div class="w-11 h-11 rounded-2xl flex items-center justify-center ${iconBg} shadow-sm shrink-0">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">${iconPath}</svg>
-                                </div>
-                                <div class="min-w-0">
-                                    <h4 class="font-extrabold text-gray-900 dark:text-white text-[15px] tracking-tight truncate">${data.note || titleText}</h4>
-                                    <p class="text-[11px] font-bold text-gray-400 dark:text-gray-500 truncate mt-0.5">${new Date(data.date).toLocaleDateString(currentLang==='id'?'id-ID':'en-US', {day:'numeric', month:'short', year:'numeric'})}</p>
-                                </div>
+                renderRecentSavings();
+                if(!document.getElementById('fullSavingHistoryScreen').classList.contains('translate-x-full')) {
+                    renderFullSavingHistory();
+                }
+            });
+        }
+
+        function renderRecentSavings() {
+            const list = document.getElementById('savingList');
+            list.innerHTML = '';
+            
+            if (savingsData.length === 0) {
+                list.innerHTML = `<div class="flex items-center justify-center h-20"><p class="text-sm font-bold text-gray-400 dark:text-gray-500">${tText('noData')||'Belum ada data.'}</p></div>`;
+                return;
+            }
+
+            const sorted = [...savingsData].slice(0, 5);
+
+            sorted.forEach(s => {
+                let isIncome = s.type === 'in';
+                let colorClass = isIncome ? 'text-emerald-500' : 'text-red-500';
+                let sign = isIncome ? '+' : '-';
+                const dateObj = new Date(s.date);
+                const dateStr = `${String(dateObj.getDate()).padStart(2, '0')} ${formatDateText(dateObj, 'short')} ${dateObj.getFullYear()}`;
+                const titleText = isIncome ? tText('savingNabung') : tText('savingTarik');
+                const noteText = s.note ? s.note : `<span class="text-gray-400 dark:text-gray-600 italic font-normal">${i18n[currentLang].noNote}</span>`;
+
+                let html = `
+                    <div onclick="toggleDetails('details-saving-home-${s.id}')" class="bg-white/40 dark:bg-white/5 p-3 rounded-[1.25rem] flex flex-col transition-all duration-300 cursor-pointer hover:bg-white/70 dark:hover:bg-white/10 active:scale-[0.98]">
+                        <div class="flex justify-between items-center px-1">
+                            <div>
+                                <h4 class="font-extrabold text-[14px] text-gray-900 dark:text-white drop-shadow-sm tracking-tight leading-tight">${titleText}</h4>
+                                <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 tracking-wider">${dateStr}</p>
                             </div>
-                            <div class="text-right pl-2 shrink-0">
-                                <p class="font-black ${colorClass} text-[15px] drop-shadow-sm tracking-tight">${isIncome ? '+' : '-'}Rp ${amount.toLocaleString('id-ID')}</p>
+                            <p class="${colorClass} font-black text-[13.5px] drop-shadow-sm tracking-tight">${sign}Rp ${s.amount.toLocaleString('id-ID')}</p>
+                        </div>
+                        <div id="details-saving-home-${s.id}" class="tx-details hidden justify-between items-center border-t border-gray-300/40 dark:border-white/10 pt-2.5 mt-2.5 px-1 animate-expand">
+                            <p class="text-[10px] text-gray-500 dark:text-gray-300 truncate max-w-[65%] font-medium">${noteText}</p>
+                            <div class="flex gap-2">
+                                <button onclick="event.stopPropagation(); openSavingModal('${s.id}')" class="text-blue-600 bg-blue-50/70 dark:text-blue-400 dark:bg-black/30 backdrop-blur-md p-1 rounded-[8px] hover:bg-blue-100 dark:hover:bg-black/50 transition shadow-sm border border-white/50 dark:border-white/10">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                </button>
+                                <button onclick="event.stopPropagation(); deleteSaving('${s.id}')" class="text-red-600 bg-red-50/70 dark:text-red-400 dark:bg-black/30 backdrop-blur-md p-1 rounded-[8px] hover:bg-red-100 dark:hover:bg-black/50 transition shadow-sm border border-white/50 dark:border-white/10">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                list.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        function openSavingHistoryScreen() {
+            const el = document.getElementById('fullSavingHistoryScreen');
+            el.classList.remove('translate-x-full');
+            renderFullSavingHistory();
+        }
+
+        function closeSavingHistoryScreen() {
+            document.getElementById('fullSavingHistoryScreen').classList.add('translate-x-full');
+        }
+
+        function renderFullSavingHistory() {
+            const list = document.getElementById('fullSavingHistoryList');
+            list.innerHTML = '';
+            
+            if (savingsData.length === 0) {
+                list.innerHTML = `<div class="text-center text-gray-400 dark:text-gray-500 py-10 font-bold">${tText('noData')}</div>`;
+                return;
+            }
+
+            // Group by month
+            const grouped = {};
+            savingsData.forEach(s => {
+                const dateObj = new Date(s.date);
+                const monthYear = formatDateText(dateObj, 'long') + ' ' + dateObj.getFullYear();
+                if(!grouped[monthYear]) grouped[monthYear] = [];
+                grouped[monthYear].push(s);
+            });
+
+            for (const [monthYear, items] of Object.entries(grouped)) {
+                let html = `
+                <div class="mb-6">
+                    <div class="sticky top-0 bg-[#f4f6fb]/95 dark:bg-[#1a1a24]/95 backdrop-blur-xl z-20 py-2 -mx-4 px-4 shadow-[0_4px_10px_-4px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_10px_-4px_rgba(0,0,0,0.2)]">
+                        <h4 class="font-black text-gray-800 dark:text-white text-[15px] tracking-wide">${monthYear}</h4>
+                    </div>
+                    <div class="glass-card rounded-[1.5rem] mt-3 p-2 flex flex-col space-y-1">`;
+                
+                items.forEach((s, idx) => {
+                    let isIncome = s.type === 'in';
+                    let colorClass = isIncome ? 'text-emerald-500' : 'text-red-500';
+                    let sign = isIncome ? '+' : '-';
+                    const dateObj = new Date(s.date);
+                    const dateStr = `${String(dateObj.getDate()).padStart(2, '0')} ${formatDateText(dateObj, 'short')} ${dateObj.getFullYear()}`;
+                    const titleText = isIncome ? tText('savingNabung') : tText('savingTarik');
+                    const noteText = s.note ? s.note : `<span class="text-gray-400 dark:text-gray-600 italic font-normal">${i18n[currentLang].noNote}</span>`;
+
+                    html += `
+                        <div onclick="toggleDetails('details-saving-full-${s.id}')" class="bg-white/30 dark:bg-white/5 p-3 rounded-xl flex flex-col transition-all cursor-pointer hover:bg-white/60 dark:hover:bg-white/10 ${idx !== items.length-1 ? 'border-b border-gray-200/50 dark:border-white/5' : ''}">
+                            <div class="flex justify-between items-center px-1">
+                                <div>
+                                    <h4 class="font-extrabold text-[14px] text-gray-900 dark:text-white drop-shadow-sm tracking-tight leading-tight">${titleText}</h4>
+                                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 tracking-wider">${dateStr}</p>
+                                </div>
+                                <p class="${colorClass} font-black text-[13.5px] drop-shadow-sm tracking-tight">${sign}Rp ${s.amount.toLocaleString('id-ID')}</p>
+                            </div>
+                            <div id="details-saving-full-${s.id}" class="tx-details hidden justify-between items-center border-t border-gray-300/40 dark:border-white/10 pt-2.5 mt-2.5 px-1 animate-expand">
+                                <p class="text-[10px] text-gray-500 dark:text-gray-300 truncate max-w-[65%] font-medium">${noteText}</p>
+                                <div class="flex gap-2">
+                                    <button onclick="event.stopPropagation(); openSavingModal('${s.id}')" class="text-blue-600 bg-blue-50/70 dark:text-blue-400 dark:bg-black/30 backdrop-blur-md p-1 rounded-[8px] hover:bg-blue-100 transition shadow-sm border border-white/50 dark:border-white/10">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                    </button>
+                                    <button onclick="event.stopPropagation(); deleteSaving('${s.id}')" class="text-red-600 bg-red-50/70 dark:text-red-400 dark:bg-black/30 backdrop-blur-md p-1 rounded-[8px] hover:bg-red-100 transition shadow-sm border border-white/50 dark:border-white/10">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     `;
                 });
-
-                document.getElementById('savingList').innerHTML = listHtml;
-                document.getElementById('totalSavingBal').innerText = 'Rp ' + totalSaving.toLocaleString('id-ID');
-                document.getElementById('savingIncome').innerText = 'Rp ' + totalIn.toLocaleString('id-ID');
-                document.getElementById('savingExpense').innerText = 'Rp ' + totalOut.toLocaleString('id-ID');
-            });
+                html += `</div></div>`;
+                list.insertAdjacentHTML('beforeend', html);
+            }
         }
+
+        async function deleteSaving(id) {
+            const result = await showGlassConfirm(
+                currentLang === 'id' ? 'Hapus Data' : 'Delete Data',
+                tText('deleteConfirm') || 'Are you sure you want to delete this saving data?',
+                { confirmText: currentLang === 'id' ? 'Hapus' : 'Delete', cancelText: currentLang === 'id' ? 'Batal' : 'Cancel' }
+            );
+            if (result === 1 && savingsRef) {
+                savingsRef.doc(String(id)).delete().then(() => {
+                    showGlassNotif(tText('success')||'Berhasil', tText('deleteSuccess')||'Data dihapus.');
+                }).catch(err => {
+                    console.error("Error deleting tabungan:", err);
+                    showGlassNotif(tText('error')||'Gagal', err.message, { type: 'error' });
+                });
+            }
+        }
+
 
         document.getElementById('savingForm').addEventListener('submit', function(e) {
             e.preventDefault();

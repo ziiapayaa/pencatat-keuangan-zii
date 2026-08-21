@@ -148,13 +148,20 @@
                     </div>
                 </div>
 
-                <div class="px-5 mt-2 flex justify-between items-end mb-4 shrink-0">
-                    <h3 class="text-[17px] font-black text-gray-900 dark:text-white drop-shadow-sm tracking-tight" data-i18n="savingHistory">Riwayat Tabungan</h3>
-                </div>
-
-                <div class="px-4 flex-1 overflow-y-auto hide-scrollbar space-y-2 pb-6" id="savingList">
-                    <div class="flex items-center justify-center h-20">
-                        <p class="text-sm font-bold text-gray-400 dark:text-gray-500" data-i18n="noData">Belum ada data.</p>
+                <div class="px-3 flex-1 overflow-y-auto hide-scrollbar pb-6 min-h-0">
+                    <div class="glass-card rounded-[2rem] p-4 flex flex-col shadow-sm">
+                        <div class="flex justify-between items-end mb-3 px-1.5">
+                            <h3 class="font-extrabold text-[16px] text-gray-900 dark:text-white tracking-wide drop-shadow-sm" data-i18n="savingHistory">Riwayat Tabungan</h3>
+                        </div>
+                        <div id="savingList" class="space-y-2">
+                            <div class="flex items-center justify-center h-20">
+                                <p class="text-sm font-bold text-gray-400 dark:text-gray-500" data-i18n="noData">Belum ada data.</p>
+                            </div>
+                        </div>
+                        <button onclick="openSavingHistoryScreen()" class="mt-4 pt-4 pb-1 border-t border-gray-300/40 dark:border-white/10 w-full flex justify-center items-center gap-1.5 text-indigo-600 dark:text-emerald-400 font-extrabold text-[13px] hover:opacity-70 transition-opacity">
+                            <span data-i18n="seeAll">Lihat Semua</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -409,6 +416,18 @@
 
             <div class="flex-1 overflow-y-auto px-4 pb-20 z-10 space-y-6 hide-scrollbar" id="fullHistoryList">
                 <!-- Data diinjeksi via JS -->
+            </div>
+        </div>
+
+        
+        <div id="fullSavingHistoryScreen" class="fixed inset-0 z-[80] bg-[#f4f6fb]/80 dark:bg-darkBg/80 backdrop-blur-3xl flex flex-col transition-transform duration-400 ease-out translate-x-full">
+            <div class="flex items-center justify-between px-5 py-4 pt-8 z-10 border-b border-white/40 dark:border-white/10 shadow-sm shrink-0">
+                <button onclick="closeSavingHistoryScreen()" class="glass-card p-2 rounded-full hover:bg-white/80 dark:hover:bg-white/20 transition shadow-sm active:scale-95">
+                    <svg class="w-5 h-5 text-gray-800 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <h2 class="text-lg font-extrabold text-gray-900 dark:text-white tracking-wide drop-shadow-sm flex-1 text-center pr-8" data-i18n="savingHistory">Riwayat Tabungan</h2>
+            </div>
+            <div class="flex-1 overflow-y-auto px-4 pb-20 z-10 space-y-6 hide-scrollbar pt-6" id="fullSavingHistoryList">
             </div>
         </div>
 
