@@ -12,6 +12,7 @@
         const auth = firebase.auth();
         const googleProvider = new firebase.auth.GoogleAuthProvider();
         let currentUser = null;
+        let savingsRef = null;
 
         auth.onAuthStateChanged((user) => {
             if (user) {
@@ -405,8 +406,10 @@
                 el.classList.remove('nav-item-active');
                 const svg = el.querySelector('svg'); const span = el.querySelector('span');
                 if(svg && span) {
-                    svg.classList.remove('text-gray-900', 'dark:text-white'); svg.classList.add('text-gray-500', 'dark:text-gray-400');
-                    span.classList.remove('text-gray-900', 'dark:text-white'); span.classList.add('text-gray-500', 'dark:text-gray-400');
+                    svg.classList.remove('text-gray-900', 'dark:text-white', 'text-indigo-600', 'dark:text-emerald-400');
+                    svg.classList.add('text-gray-400', 'dark:text-gray-500');
+                    span.classList.remove('text-gray-900', 'dark:text-white', 'font-black'); 
+                    span.classList.add('text-gray-500', 'dark:text-gray-400', 'font-bold');
                 }
             });
             
@@ -421,12 +424,10 @@
                 activeBtn.classList.add('nav-item-active');
                 const activeSvg = activeBtn.querySelector('svg'); const activeSpan = activeBtn.querySelector('span');
                 if (activeSvg && activeSpan) {
-                    activeSvg.classList.remove('text-gray-500', 'dark:text-gray-400'); activeSvg.classList.add('text-gray-900', 'dark:text-white');
-                    activeSpan.classList.remove('text-gray-500', 'dark:text-gray-400'); activeSpan.classList.add('text-gray-900', 'dark:text-white');
-                    if(tabId === 'home') {
-                        activeSvg.innerHTML = '<path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>';
-                        activeSvg.setAttribute('fill', 'currentColor'); activeSvg.removeAttribute('stroke');
-                    }
+                    activeSvg.classList.remove('text-gray-400', 'dark:text-gray-500'); 
+                    activeSvg.classList.add('text-indigo-600', 'dark:text-emerald-400');
+                    activeSpan.classList.remove('text-gray-500', 'dark:text-gray-400', 'font-bold'); 
+                    activeSpan.classList.add('text-gray-900', 'dark:text-white', 'font-black');
                 }
             }
             
