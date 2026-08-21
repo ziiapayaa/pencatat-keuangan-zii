@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MoneyTrack - Finance Tracker</title>
+    <title>Money Track - Finance Tracker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -41,7 +41,7 @@
             <div class="w-16 h-16 bg-gradient-to-tr from-indigo-500 to-emerald-500 rounded-[1.25rem] flex items-center justify-center mb-5 shadow-lg border border-white/40">
                 <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             </div>
-            <h1 class="text-2xl font-black text-gray-900 dark:text-white mb-2 tracking-tight">MoneyTrack</h1>
+            <h1 class="text-2xl font-black text-gray-900 dark:text-white mb-2 tracking-tight">Money Track</h1>
             <p class="text-xs text-gray-500 dark:text-gray-400 text-center mb-8 font-medium px-4">Kelola keuangan Anda dengan mudah, aman, dan pribadi.</p>
             
             <button onclick="loginWithGoogle()" class="w-full flex items-center justify-center gap-3 bg-white dark:bg-[#1a1a1a] text-gray-800 dark:text-white px-5 py-3.5 rounded-2xl shadow-sm border border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5 active:scale-95 transition-all font-extrabold text-[14px]">
@@ -63,7 +63,7 @@
                 <div class="glass rounded-[2rem] p-5 z-10 mx-3 mt-5 mb-4 shadow-xl shrink-0">
                     <div class="mb-5 flex justify-between items-center">
                         <div>
-                            <h1 class="text-[22px] font-extrabold tracking-tight">MoneyTrack</h1>
+                            <h1 class="text-[22px] font-extrabold tracking-tight">Money Track</h1>
                             <p class="text-gray-500 dark:text-gray-400 text-[10px] mt-0.5 font-bold tracking-widest uppercase"><span data-i18n="greeting">Halo,</span> <span id="homeUserName">Zii</span>!</p>
                         </div>
 
@@ -119,9 +119,7 @@
             <!-- --- TAB: SAVING --- -->
             <div id="tab-saving" class="tab-content flex-1 flex flex-col hidden overflow-y-auto hide-scrollbar pt-6 pb-28 min-h-0">
                 <div class="glass rounded-[2rem] p-5 z-10 mx-3 mb-4 shadow-xl shrink-0 border border-white/40 dark:border-white/10 relative overflow-hidden bg-gradient-to-br from-indigo-50/90 to-blue-50/80 dark:from-[#2a2a35]/90 dark:to-[#1f1f2e]/80">
-                    <div class="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
-                        <svg class="w-24 h-24 text-indigo-500 dark:text-emerald-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.43-2.81 3.1-3.14V3h2.67v1.93c1.61.24 3.03 1.34 3.19 3.22h-1.95c-.17-1.14-.94-1.84-2.54-1.84-1.5 0-2.12.79-2.12 1.44 0 .84.58 1.43 2.87 2 2.53.64 3.98 1.78 3.98 3.82 0 1.92-1.47 2.97-3.42 3.32z"/></svg>
-                    </div>
+
                     <div class="mb-5 relative z-10">
                         <p class="text-gray-500 dark:text-gray-400 text-[11px] font-bold mb-0.5 tracking-wider uppercase" data-i18n="totalSaving">Total Tabungan</p>
                         <h2 class="text-[34px] leading-tight font-black tracking-tight text-indigo-600 dark:text-emerald-400 drop-shadow-sm truncate" id="totalSavingBal">Rp 0</h2>
