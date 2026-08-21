@@ -271,19 +271,24 @@
             </div>
         </div>
         
-        <!-- ==================== FLOATING NAVBAR ==================== -->
+        <!-- ==================== FLOATING NAVBAR WITH NOTCH ==================== -->
 
         <div class="fixed bottom-5 left-0 right-0 z-30 w-full flex justify-center px-5 pointer-events-none">
-            <div class="w-full max-w-[360px] relative pointer-events-auto">
+            <div class="w-full max-w-[360px] relative pointer-events-auto h-[68px]">
 
-                <!-- Navbar pill -->
-                <div id="main-navbar" class="relative z-10 w-full flex items-center justify-around px-2 py-2
+                <!-- Navbar Background with Notch Mask -->
+                <div class="absolute inset-0 z-0
                     bg-white/55 dark:bg-[#1a1a28]/55
                     backdrop-blur-[28px] saturate-150
                     border border-white/70 dark:border-white/15
-                    rounded-[2rem]
+                    rounded-[2.2rem]
                     shadow-[0_8px_32px_rgba(0,0,0,0.10)]
-                    dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+                    dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
+                    style="-webkit-mask-image: radial-gradient(circle at 50% 4px, transparent 35px, black 36px); mask-image: radial-gradient(circle at 50% 4px, transparent 35px, black 36px);">
+                </div>
+
+                <!-- Navbar Items Container -->
+                <div id="main-navbar" class="relative z-10 w-full h-full flex items-center justify-between px-3">
 
                     <!-- Home -->
                     <button onclick="switchTab('home')" id="nav-home"
@@ -299,15 +304,8 @@
                         <span class="text-[9px] font-semibold tracking-wide" data-i18n="saving">Savings</span>
                     </button>
 
-                    <!-- Center + button (elevated above pill) -->
-                    <button onclick="openActionSheet()" id="nav-add"
-                        class="flex items-center justify-center w-14 h-14 -mt-7 shrink-0
-                        text-white rounded-full
-                        border border-white/30
-                        hover:opacity-90 active:scale-95 transition-all duration-200"
-                        style="background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%); box-shadow: 0 6px 24px rgba(0,122,255,0.5), 0 2px 8px rgba(88,86,214,0.35);">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 4v16m8-8H4"></path></svg>
-                    </button>
+                    <!-- Center Placeholder for Notch -->
+                    <div class="w-[60px] shrink-0"></div>
 
                     <!-- Report -->
                     <button onclick="switchTab('report')" id="nav-report"
@@ -324,6 +322,18 @@
                     </button>
 
                 </div>
+
+                <!-- Center + button (Absolute positioned precisely in the notch) -->
+                <button onclick="openActionSheet()" id="nav-add"
+                    class="absolute left-1/2 -translate-x-1/2 -top-[24px] z-20
+                    flex items-center justify-center w-14 h-14
+                    text-white rounded-full
+                    border border-white/30
+                    hover:opacity-90 active:scale-95 transition-all duration-200"
+                    style="background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%); box-shadow: 0 6px 24px rgba(0,122,255,0.45), 0 2px 8px rgba(88,86,214,0.3);">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 4v16m8-8H4"></path></svg>
+                </button>
+
             </div>
         </div>
 
