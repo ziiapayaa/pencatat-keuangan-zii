@@ -33,10 +33,12 @@
                 }
                 
                 // Fetch user data
+                savingsRef = db.collection('users').doc(user.uid).collection('savings');
                 loadFromFirestore();
                 renderSavings();
             } else {
                 currentUser = null;
+                savingsRef = null;
                 const loginScreen = document.getElementById('loginScreen');
                 loginScreen.classList.remove('hidden');
                 setTimeout(() => loginScreen.classList.remove('opacity-0', 'pointer-events-none'), 50);
