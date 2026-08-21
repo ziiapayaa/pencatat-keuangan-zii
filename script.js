@@ -183,7 +183,8 @@
                 totalSaving: 'Total Tabungan', savingIn: 'Setor', savingOut: 'Tarik', savingHistory: 'Riwayat Tabungan', noData: 'Belum ada data.',
                 addSavingBtn: 'Catat Tabungan', addSavingDesc: 'Nabung atau tarik dana', actionSheetTitle: 'Pilih Transaksi', addSavingTitle: 'Catat Tabungan',
                 savingNabung: 'Nabung', savingTarik: 'Tarik Dana', editSavingTitle: 'Edit Tabungan', updateSuccess: 'Data diperbarui.', addSuccess: 'Data disimpan.',
-                deleteConfirm: 'Apakah Anda yakin ingin menghapus data ini?', deleteSuccess: 'Data dihapus.', success: 'Berhasil', error: 'Gagal'
+                deleteConfirm: 'Apakah Anda yakin ingin menghapus data ini?', deleteSuccess: 'Data dihapus.', success: 'Berhasil', error: 'Gagal',
+                loginDesc: 'Kelola keuangan Anda dengan mudah, aman, dan pribadi.', loginBtn: 'Masuk dengan Google'
             },
             en: {
                 home: 'Home', add: 'Add', report: 'Report', settings: 'Settings', saving: 'Savings',
@@ -201,7 +202,8 @@
                 totalSaving: 'Total Savings', savingIn: 'Deposit', savingOut: 'Withdraw', savingHistory: 'Savings History', noData: 'No data available.',
                 addSavingBtn: 'Record Saving', addSavingDesc: 'Deposit or withdraw funds', actionSheetTitle: 'Choose Transaction', addSavingTitle: 'Record Saving',
                 savingNabung: 'Deposit', savingTarik: 'Withdraw', editSavingTitle: 'Edit Saving', updateSuccess: 'Data updated.', addSuccess: 'Data saved.',
-                deleteConfirm: 'Are you sure you want to delete this data?', deleteSuccess: 'Data deleted.', success: 'Success', error: 'Error'
+                deleteConfirm: 'Are you sure you want to delete this data?', deleteSuccess: 'Data deleted.', success: 'Success', error: 'Error',
+                loginDesc: 'Manage your finances easily, securely, and privately.', loginBtn: 'Sign in with Google'
             }
         };
 
