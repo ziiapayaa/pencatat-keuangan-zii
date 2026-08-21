@@ -1188,18 +1188,18 @@
 
         function showExportOptions() {
             const sourceOpts = [
-                { value: 'transactions', label: currentLang === 'id' ? 'Transaksi' : 'Transactions', selected: true },
+                { value: 'transactions', label: currentLang === 'id' ? 'Transaksi' : 'Transactions', selected: false },
                 { value: 'savings', label: currentLang === 'id' ? 'Tabungan' : 'Savings', selected: false }
             ];
             openOptionsModal(sourceOpts, (source) => {
                 const formatOpts = [
-                    { value: 'pdf', label: 'PDF Report', selected: true },
+                    { value: 'pdf', label: 'PDF Report', selected: false },
                     { value: 'csv', label: 'CSV File', selected: false }
                 ];
                 setTimeout(() => {
                     openOptionsModal(formatOpts, (format) => {
                         const timeOpts = [
-                            { value: 'all', label: currentLang === 'id' ? 'Semua Waktu' : 'All Time', selected: true },
+                            { value: 'all', label: currentLang === 'id' ? 'Semua Waktu' : 'All Time', selected: false },
                             { value: 'month', label: currentLang === 'id' ? 'Bulan Ini' : 'This Month', selected: false },
                             { value: '30days', label: currentLang === 'id' ? '30 Hari Terakhir' : 'Last 30 Days', selected: false },
                             { value: '7days', label: currentLang === 'id' ? '7 Hari Terakhir' : 'Last 7 Days', selected: false }
