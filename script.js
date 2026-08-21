@@ -10,6 +10,74 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
+        // --- CUSTOM GLASS NOTIFICATION SYSTEM (iOS Style) ---
+        let glassNotifResolve = null;
+
+        function showGlassNotif(title, message, options = {}) {
+            const { type = 'info', buttons = [{text: 'OK', bold: true}] } = options;
+            const overlay = document.getElementById('glassNotifOverlay');
+            const box = document.getElementById('glassNotifBox');
+            const icon = document.getElementById('glassNotifIcon');
+
+            document.getElementById('glassNotifTitle').innerText = title;
+            document.getElementById('glassNotifMessage').innerText = message;
+
+            // Icon styling based on type
+            const iconMap = {
+                danger: { bg: 'rgba(255,59,48,0.12)', color: 'text-red-500', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>' },
+                warning: { bg: 'rgba(255,149,0,0.12)', color: 'text-orange-500', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>' },
+                success: { bg: 'rgba(52,199,89,0.12)', color: 'text-green-500', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>' },
+                info: { bg: 'rgba(0,122,255,0.12)', color: 'text-blue-500', svg: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>' }
+            };
+            const ic = iconMap[type] || iconMap.info;
+            icon.style.background = ic.bg;
+            icon.innerHTML = `<svg class="w-6 h-6 ${ic.color}" fill="none" stroke="currentColor" viewBox="0 0 24 24">${ic.svg}</svg>`;
+
+            // Build buttons
+            const btnContainer = document.getElementById('glassNotifButtons');
+            btnContainer.innerHTML = '';
+            buttons.forEach((btn, i) => {
+                const el = document.createElement('button');
+                el.className = 'glass-notif-btn' + (btn.bold ? ' glass-notif-btn-bold' : '') + (btn.danger ? ' glass-notif-btn-danger' : '');
+                el.innerText = btn.text;
+                el.onclick = () => {
+                    closeGlassNotif();
+                    if (glassNotifResolve) glassNotifResolve(i);
+                };
+                btnContainer.appendChild(el);
+            });
+
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+            box.classList.remove('notif-pop');
+            void box.offsetWidth; // trigger reflow
+            box.classList.add('notif-pop');
+            requestAnimationFrame(() => { overlay.style.opacity = '1'; });
+
+            return new Promise(resolve => { glassNotifResolve = resolve; });
+        }
+
+        function showGlassConfirm(title, message, options = {}) {
+            const cancelText = options.cancelText || 'Batal';
+            const confirmText = options.confirmText || 'Hapus';
+            return showGlassNotif(title, message, {
+                type: options.type || 'danger',
+                buttons: [
+                    { text: cancelText },
+                    { text: confirmText, danger: options.type === 'danger' || !options.type, bold: true }
+                ]
+            });
+        }
+
+        function closeGlassNotif() {
+            const overlay = document.getElementById('glassNotifOverlay');
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+            }, 300);
+        }
+
         const i18n = {
             id: {
                 home: 'Beranda', add: 'Tambah', report: 'Laporan', settings: 'Pengaturan',
@@ -569,41 +637,52 @@
             showModal();
         }
 
-        function deleteCurrentTransaction() {
+        async function deleteCurrentTransaction() {
             if (!editingId) return;
-            if (confirm('Yakin hapus data ini?')) {
+            const result = await showGlassConfirm(
+                currentLang === 'id' ? 'Hapus Data' : 'Delete Data',
+                currentLang === 'id' ? 'Yakin ingin menghapus transaksi ini? Tindakan ini tidak bisa dibatalkan.' : 'Are you sure you want to delete this transaction? This action cannot be undone.',
+                { confirmText: currentLang === 'id' ? 'Hapus' : 'Delete', cancelText: currentLang === 'id' ? 'Batal' : 'Cancel' }
+            );
+            if (result === 1) {
+                db.collection('transactions').doc(String(editingId)).delete();
                 transactions = transactions.filter(t => t.id !== editingId);
-                saveToLocalStorage(); updateDashboard();
+                updateDashboard();
                 if(!document.getElementById('fullHistoryScreen').classList.contains('translate-x-full')) renderFullHistory();
                 if (currentTab === 'report') renderReport();
                 closeModal();
             }
         }
         
-        function deleteTransaction(id) {
-            if (confirm('Yakin hapus data ini?')) {
+        async function deleteTransaction(id) {
+            const result = await showGlassConfirm(
+                currentLang === 'id' ? 'Hapus Data' : 'Delete Data',
+                currentLang === 'id' ? 'Yakin ingin menghapus transaksi ini? Tindakan ini tidak bisa dibatalkan.' : 'Are you sure you want to delete this transaction? This action cannot be undone.',
+                { confirmText: currentLang === 'id' ? 'Hapus' : 'Delete', cancelText: currentLang === 'id' ? 'Batal' : 'Cancel' }
+            );
+            if (result === 1) {
+                db.collection('transactions').doc(String(id)).delete();
                 transactions = transactions.filter(t => t.id !== id);
-                saveToLocalStorage(); updateDashboard();
+                updateDashboard();
                 if(!document.getElementById('fullHistoryScreen').classList.contains('translate-x-full')) renderFullHistory();
                 if (currentTab === 'report') renderReport();
             }
         }
 
-        function resetData() {
-            // BUGFIX: dulu cuma confirm() biasa, kepencet dikit langsung hilang semua data
-            // (apalagi datanya cuma di localStorage, gak ada backup). Sekarang harus ketik "HAPUS".
+        async function resetData() {
             const isId = currentLang === 'id';
-            const msg = isId
-                ? 'Semua data transaksi akan dihapus PERMANEN dan tidak bisa dikembalikan.\n\nKetik HAPUS untuk konfirmasi:'
-                : 'All transaction data will be PERMANENTLY deleted and cannot be recovered.\n\nType DELETE to confirm:';
-            const confirmWord = isId ? 'HAPUS' : 'DELETE';
-            const typed = prompt(msg);
-            if (typed !== null && typed.trim().toUpperCase() === confirmWord) {
-                transactions = []; saveToLocalStorage(); updateDashboard();
+            const result = await showGlassConfirm(
+                isId ? 'Hapus Semua Data' : 'Delete All Data',
+                isId ? 'Semua data transaksi akan dihapus permanen dan tidak bisa dikembalikan.' : 'All transaction data will be permanently deleted and cannot be recovered.',
+                { confirmText: isId ? 'Hapus Semua' : 'Delete All', cancelText: isId ? 'Batal' : 'Cancel' }
+            );
+            if (result === 1) {
+                transactions.forEach(t => { db.collection('transactions').doc(String(t.id)).delete(); });
+                transactions = [];
+                updateDashboard();
                 if(!document.getElementById('fullHistoryScreen').classList.contains('translate-x-full')) renderFullHistory();
                 if (currentTab === 'report') renderReport();
-            } else if (typed !== null) {
-                alert(isId ? 'Konfirmasi tidak cocok, data tidak dihapus.' : 'Confirmation did not match, data was not deleted.');
+                closeOptionsModal();
             }
         }
 
@@ -620,7 +699,7 @@
                 try {
                     const text = e.target.result;
                     const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
-                    if (lines.length < 2) { alert(currentLang === 'id' ? 'File CSV kosong atau formatnya salah.' : 'CSV file is empty or invalid.'); return; }
+                    if (lines.length < 2) { showGlassNotif(currentLang === 'id' ? 'Error' : 'Error', currentLang === 'id' ? 'File CSV kosong atau formatnya salah.' : 'CSV file is empty or invalid.', {type:'warning'}); return; }
 
                     // Baris pertama = header (Tanggal,Tipe,Kategori,Catatan,Jumlah), lewati
                     let imported = 0, skipped = 0;
@@ -647,15 +726,17 @@
                         imported++;
                     }
 
-                    saveToLocalStorage(); updateDashboard();
+                    updateDashboard();
                     if(!document.getElementById('fullHistoryScreen').classList.contains('translate-x-full')) renderFullHistory();
                     if (currentTab === 'report') renderReport();
 
-                    alert(currentLang === 'id'
-                        ? `Import selesai. Berhasil: ${imported}, dilewati: ${skipped}.`
-                        : `Import finished. Success: ${imported}, skipped: ${skipped}.`);
+                    showGlassNotif(
+                        currentLang === 'id' ? 'Import Berhasil' : 'Import Success',
+                        currentLang === 'id' ? `Berhasil: ${imported} data, dilewati: ${skipped} data.` : `Success: ${imported} items, skipped: ${skipped} items.`,
+                        {type:'success'}
+                    );
                 } catch (err) {
-                    alert(currentLang === 'id' ? 'Gagal membaca file CSV.' : 'Failed to read CSV file.');
+                    showGlassNotif('Error', currentLang === 'id' ? 'Gagal membaca file CSV.' : 'Failed to read CSV file.', {type:'danger'});
                 } finally {
                     event.target.value = '';
                 }
@@ -664,7 +745,7 @@
         }
 
         function exportCSV() {
-            if (transactions.length === 0) return alert("Belum ada data!");
+            if (transactions.length === 0) return showGlassNotif(currentLang === 'id' ? 'Tidak Ada Data' : 'No Data', currentLang === 'id' ? 'Belum ada data untuk diekspor.' : 'No data to export.', {type:'info'});
             let csvContent = "data:text/csv;charset=utf-8,Tanggal,Tipe,Kategori,Catatan,Jumlah\n";
             transactions.forEach(row => { csvContent += `${row.date},${row.type},${tText(row.category)},${row.note},${row.amount}\n`; });
             const link = document.createElement("a"); link.setAttribute("href", encodeURI(csvContent));
@@ -683,7 +764,7 @@
             // BUGFIX: dulu nominal 0 / kosong / NaN bisa ke-save diam-diam (karena "required"
             // cuma ngecek non-empty, bukan valid angka > 0). Sekarang divalidasi dulu.
             if (!rawAmount || isNaN(amount) || amount <= 0) {
-                alert(currentLang === 'id' ? 'Jumlah harus diisi dan lebih dari 0.' : 'Amount must be filled and greater than 0.');
+                showGlassNotif(currentLang === 'id' ? 'Validasi' : 'Validation', currentLang === 'id' ? 'Jumlah harus diisi dan lebih dari 0.' : 'Amount must be filled and greater than 0.', {type:'warning'});
                 document.getElementById('amount').focus();
                 return;
             }

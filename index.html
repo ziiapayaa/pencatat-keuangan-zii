@@ -316,6 +316,26 @@
 
     </div>
 
+        <!-- ==================== CUSTOM GLASS NOTIFICATION MODAL ==================== -->
+        <div id="glassNotifOverlay" class="fixed inset-0 bg-black/30 backdrop-blur-[12px] z-[300] hidden items-center justify-center p-6 transition-all duration-300 opacity-0" onclick="closeGlassNotif()">
+            <div id="glassNotifBox" class="w-full max-w-[300px] rounded-[22px] overflow-hidden transform scale-90 transition-all duration-300 shadow-2xl" onclick="event.stopPropagation()" style="background: rgba(255,255,255,0.72); backdrop-filter: blur(40px) saturate(190%); -webkit-backdrop-filter: blur(40px) saturate(190%); border: 0.5px solid rgba(255,255,255,0.5);">
+                <!-- Icon -->
+                <div class="flex justify-center pt-6 pb-2">
+                    <div id="glassNotifIcon" class="w-12 h-12 rounded-full flex items-center justify-center" style="background: rgba(255,59,48,0.12);">
+                        <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path></svg>
+                    </div>
+                </div>
+                <!-- Title -->
+                <h3 id="glassNotifTitle" class="text-center text-[17px] font-bold text-gray-900 px-6 pb-1">Hapus Data</h3>
+                <!-- Message -->
+                <p id="glassNotifMessage" class="text-center text-[13px] text-gray-500 px-6 pb-5 leading-relaxed">Yakin hapus data ini?</p>
+                <!-- Buttons -->
+                <div id="glassNotifButtons" class="flex border-t" style="border-color: rgba(0,0,0,0.08);">
+                    <!-- Buttons injected by JS -->
+                </div>
+            </div>
+        </div>
+
     <script src="script.js"></script>
 </body>
 </html>
