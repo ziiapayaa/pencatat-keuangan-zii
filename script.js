@@ -380,12 +380,9 @@
         }
 
         function initApp() {
-            const savedTheme = localStorage.getItem('catatuang_theme');
             const toggleBtn = document.getElementById('darkModeToggle');
-            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark'); isDark = true;
-                if (toggleBtn) toggleBtn.checked = true;
-            }
+            isDark = document.documentElement.classList.contains('dark');
+            if (toggleBtn) toggleBtn.checked = isDark;
             applyTranslations();
         }
 
