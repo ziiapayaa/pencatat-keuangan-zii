@@ -1,177 +1,199 @@
-        body { -webkit-tap-highlight-color: transparent; }
+        /* ============================================
+           iOS 26 Design System — MoneyTrack
+        ============================================ */
+
+        /* Base */
+        body { 
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            letter-spacing: -0.01em;
+        }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* --- PERFORMANCE OPTIMIZATIONS --- */
+        /* --- PERFORMANCE --- */
         .tab-content {
             will-change: opacity;
             transform: translateZ(0);
             contain: layout style;
         }
-        .glass, .glass-card {
-            transform: translateZ(0);
-        }
-        .animate-blob {
-            backface-visibility: hidden;
-            perspective: 1000px;
-        }
+        .glass, .glass-card { transform: translateZ(0); }
+        .animate-blob { backface-visibility: hidden; perspective: 1000px; }
         
-        /* Animasi Modal Bawah */
-        .modal-enter { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .modal-exit { animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .tab-enter { animation: fadeIn 0.3s ease-out forwards; }
+        /* --- iOS 26 Animations --- */
+        .modal-enter { animation: slideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .modal-exit  { animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .tab-enter   { animation: fadeIn 0.25s ease-out forwards; }
         
-        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slideUp   { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         @keyframes slideDown { from { transform: translateY(0); opacity: 1; } to { transform: translateY(100%); opacity: 0; } }
-        @keyframes expandDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        .animate-expand { animation: expandDown 0.2s ease-out forwards; }
+        @keyframes expandDown { from { opacity: 0; transform: translateY(-8px) scaleY(0.96); } to { opacity: 1; transform: translateY(0) scaleY(1); } }
+        @keyframes fadeIn    { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-expand { animation: expandDown 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
 
-        /* --- LIQUID GLASSMORPHISM CORE --- */
+        /* ============================================
+           iOS 26 LIQUID GLASS — Light Mode
+        ============================================ */
         .glass {
-            background: rgba(255, 255, 255, 0.45);
-            backdrop-filter: blur(32px) saturate(180%);
-            -webkit-backdrop-filter: blur(32px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.55);
+            background: rgba(255, 255, 255, 0.52);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border: 0.5px solid rgba(255, 255, 255, 0.6);
             box-shadow:
-                0 12px 40px rgba(31, 38, 135, 0.08),
-                inset 0 -1px 0 rgba(255, 255, 255, 0.2),
-                inset 1px 0 0 rgba(255, 255, 255, 0.5);
+                0 2px 20px rgba(0, 0, 0, 0.06),
+                0 8px 32px rgba(0, 0, 0, 0.04);
         }
         
         .glass-card {
-            background: rgba(255, 255, 255, 0.42);
-            backdrop-filter: blur(24px) saturate(160%);
-            -webkit-backdrop-filter: blur(24px) saturate(160%);
-            border: 1px solid rgba(255, 255, 255, 0.55);
+            background: rgba(255, 255, 255, 0.50);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+            border: 0.5px solid rgba(255, 255, 255, 0.6);
             box-shadow:
-                0 8px 24px rgba(0, 0, 0, 0.06),
-                inset 0 -1px 0 rgba(255, 255, 255, 0.15);
+                0 2px 12px rgba(0, 0, 0, 0.05),
+                0 6px 20px rgba(0, 0, 0, 0.03);
         }
 
         .glass-input {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px) saturate(140%);
-            -webkit-backdrop-filter: blur(12px) saturate(140%);
-            border: 1px solid rgba(255, 255, 255, 0.85);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px) saturate(160%);
+            -webkit-backdrop-filter: blur(16px) saturate(160%);
+            border: 0.5px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
         }
 
-        /* --- NAVBAR STYLE --- */
-        .nav-item { 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-            color: #9ca3af; 
-        }
-        .nav-item-active {
-            background: rgba(255, 255, 255, 0.85);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,1);
-            color: #4f46e5 !important;
-        }
-        .dark .nav-item-active {
-            background: rgba(255, 255, 255, 0.12);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
-            color: #818cf8 !important;
-        }
-
-        /* DARK MODE — LIQUID GLASS */
+        /* ============================================
+           iOS 26 LIQUID GLASS — Dark Mode
+        ============================================ */
         .dark .glass {
-            background: rgba(20, 24, 40, 0.5);
-            backdrop-filter: blur(32px) saturate(180%);
-            -webkit-backdrop-filter: blur(32px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(28, 28, 30, 0.72);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
             box-shadow:
-                0 12px 40px rgba(0, 0, 0, 0.45),
-                inset 0 -1px 0 rgba(255, 255, 255, 0.04),
-                inset 1px 0 0 rgba(255, 255, 255, 0.08);
+                0 2px 20px rgba(0, 0, 0, 0.5),
+                0 8px 32px rgba(0, 0, 0, 0.3);
         }
         .dark .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(24px) saturate(160%);
-            -webkit-backdrop-filter: blur(24px) saturate(160%);
-            border: 1px solid rgba(255, 255, 255, 0.09);
+            background: rgba(44, 44, 46, 0.65);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+            border: 0.5px solid rgba(255, 255, 255, 0.08);
             box-shadow:
-                0 8px 24px rgba(0, 0, 0, 0.35),
-                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+                0 2px 12px rgba(0, 0, 0, 0.4),
+                0 6px 20px rgba(0, 0, 0, 0.25);
         }
         .dark .glass-input {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px) saturate(140%);
-            -webkit-backdrop-filter: blur(12px) saturate(140%);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            background: rgba(44, 44, 46, 0.8);
+            backdrop-filter: blur(16px) saturate(160%);
+            -webkit-backdrop-filter: blur(16px) saturate(160%);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
             color: white;
         }
+
+        /* ============================================
+           iOS 26 NAVBAR
+        ============================================ */
+        .nav-item { 
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); 
+            color: #8E8E93;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+        .nav-item-active {
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+            color: #007AFF !important;
+        }
         .dark .nav-item-active {
-            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.14);
+            box-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+            color: #0A84FF !important;
         }
 
-        /* --- RADIO CIRCLE INDICATOR (iOS Style) --- */
+        .liquid-navbar {
+            background: rgba(242, 242, 247, 0.72);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border: 0.5px solid rgba(255, 255, 255, 0.65);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        .dark .liquid-navbar {
+            background: rgba(28, 28, 30, 0.72);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.5),
+                0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        .liquid-navbar .nav-item-active {
+            border-radius: 18px;
+            padding: 5px 14px;
+        }
+        .dark .liquid-navbar .nav-item-active {
+            border-radius: 18px;
+            padding: 5px 14px;
+        }
+
+        /* ============================================
+           iOS 26 RADIO & FORM
+        ============================================ */
         .radio-circle {
-            width: 20px; height: 20px; border-radius: 50%; border: 2.5px solid #cbd5e1; transition: all 0.2s; display: flex; align-items: center; justify-content: center;
+            width: 20px; height: 20px; border-radius: 50%; 
+            border: 2px solid #C7C7CC; 
+            transition: all 0.2s; 
+            display: flex; align-items: center; justify-content: center;
         }
-        .dark .radio-circle { border-color: #4b5563; }
-        
-        .radio-active .radio-circle { border-color: #c084fc; border-width: 6px; }
-        .dark .radio-active .radio-circle { border-color: #c084fc; border-width: 6px; }
+        .dark .radio-circle { border-color: #48484A; }
+        .radio-active .radio-circle { border-color: #007AFF; border-width: 6px; }
+        .dark .radio-active .radio-circle { border-color: #0A84FF; border-width: 6px; }
 
-        /* --- GLASS NOTIFICATION MODAL (iOS Style) --- */
+        /* ============================================
+           iOS 26 ALERT / NOTIFICATION
+        ============================================ */
         .dark #glassNotifBox {
-            background: rgba(30, 30, 30, 0.82) !important;
-            border-color: rgba(255, 255, 255, 0.12) !important;
+            background: rgba(44, 44, 46, 0.92) !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
         }
         .dark #glassNotifTitle { color: #ffffff; }
         .dark #glassNotifMessage { color: rgba(255,255,255,0.55); }
-        .dark #glassNotifButtons { border-color: rgba(255,255,255,0.1) !important; }
-        .dark .glass-notif-btn { border-color: rgba(255,255,255,0.1) !important; color: #60a5fa !important; }
-        .dark .glass-notif-btn-danger { color: #f87171 !important; }
+        .dark #glassNotifButtons { border-color: rgba(255,255,255,0.08) !important; }
+        .dark .glass-notif-btn { border-color: rgba(255,255,255,0.08) !important; color: #0A84FF !important; }
+        .dark .glass-notif-btn-danger { color: #FF453A !important; }
 
         .glass-notif-btn {
-            flex: 1; padding: 14px 0; text-align: center; font-size: 17px;
-            font-weight: 400; color: #007AFF; background: transparent;
+            flex: 1; padding: 14px 0; text-align: center; 
+            font-size: 17px; font-weight: 400; 
+            color: #007AFF; background: transparent;
             border: none; cursor: pointer; transition: background 0.15s;
             border-right: 0.5px solid rgba(0,0,0,0.08);
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
         }
         .glass-notif-btn:last-child { border-right: none; }
-        .glass-notif-btn:active { background: rgba(0,0,0,0.05); }
-        .dark .glass-notif-btn:active { background: rgba(255,255,255,0.08); }
+        .glass-notif-btn:active { background: rgba(0,0,0,0.04); }
+        .dark .glass-notif-btn:active { background: rgba(255,255,255,0.06); }
         .glass-notif-btn-bold { font-weight: 600; }
         .glass-notif-btn-danger { color: #FF3B30 !important; font-weight: 600; }
 
         @keyframes notifPop {
-            0% { transform: scale(0.85); opacity: 0; }
-            60% { transform: scale(1.02); }
+            0%   { transform: scale(0.88); opacity: 0; }
+            60%  { transform: scale(1.01); }
             100% { transform: scale(1); opacity: 1; }
         }
-        .notif-pop { animation: notifPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        .notif-pop { animation: notifPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
 
-/* --- LIQUID GLASS NAVBAR --- */
-.liquid-navbar {
-    background: rgba(255, 255, 255, 0.4);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    box-shadow: 
-        0 15px 35px rgba(0, 0, 0, 0.1),
-        inset 0 -1px 2px rgba(255, 255, 255, 0.2);
-}
-
-.dark .liquid-navbar {
-    background: rgba(30, 30, 40, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 
-        0 15px 35px rgba(0, 0, 0, 0.4),
-        inset 0 -1px 2px rgba(255, 255, 255, 0.05);
-}
-
-/* Make active item stand out more in liquid style */
-.liquid-navbar .nav-item-active {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 20px;
-    box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 2px 5px rgba(0,0,0,0.05);
-    padding: 6px 12px;
-}
-.dark .liquid-navbar .nav-item-active {
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: inset 0 2px 4px rgba(255,255,255,0.1), 0 2px 5px rgba(0,0,0,0.2);
-}
+        /* ============================================
+           iOS 26 TYPOGRAPHY HELPERS
+        ============================================ */
+        .ios-title-large   { font-size: 34px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.1; }
+        .ios-title         { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+        .ios-headline      { font-size: 17px; font-weight: 600; letter-spacing: -0.2px; }
+        .ios-body          { font-size: 17px; font-weight: 400; letter-spacing: -0.1px; }
+        .ios-subhead       { font-size: 15px; font-weight: 400; letter-spacing: -0.1px; }
+        .ios-footnote      { font-size: 13px; font-weight: 400; letter-spacing: 0; }
+        .ios-caption       { font-size: 11px; font-weight: 400; letter-spacing: 0.07px; }
+        .ios-label-caps    { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; }

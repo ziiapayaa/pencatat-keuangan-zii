@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MoneyTrack - Finance Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -21,14 +24,14 @@
         }
     </script>
 </head>
-<body class="bg-[#f4f6fb] dark:bg-darkBg text-gray-800 dark:text-gray-100 antialiased font-sans flex justify-center transition-colors duration-500 overflow-hidden h-screen">
+<body class="bg-[#f2f2f7] dark:bg-[#000000] text-gray-900 dark:text-gray-100 antialiased flex justify-center transition-colors duration-500 overflow-hidden h-screen" style="font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue', sans-serif;">
 
-    <!-- Ambient Background Bubbles -->
+    <!-- Ambient Background Mesh — iOS 26 style -->
     <div class="fixed inset-0 w-full flex justify-center z-0 overflow-hidden pointer-events-none" style="contain: strict;">
         <div class="w-full max-w-md relative h-full">
-            <div class="absolute top-[-5%] left-[-10%] w-72 h-72 bg-pink-300 dark:bg-pink-900/60 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[80px] opacity-60 animate-blob" style="will-change: transform; transform: translateZ(0);"></div>
-            <div class="absolute top-[20%] right-[-10%] w-72 h-72 bg-purple-300 dark:bg-purple-900/60 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[80px] opacity-60 animate-blob animation-delay-2000" style="will-change: transform; transform: translateZ(0);"></div>
-            <div class="absolute bottom-[-5%] left-[10%] w-80 h-80 bg-indigo-300 dark:bg-emerald-600/40 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[100px] opacity-70 animate-blob animation-delay-4000" style="will-change: transform; transform: translateZ(0);"></div>
+            <div class="absolute top-[-8%] left-[-15%] w-80 h-80 bg-blue-200 dark:bg-blue-900/40 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[90px] opacity-50 animate-blob" style="will-change: transform; transform: translateZ(0);"></div>
+            <div class="absolute top-[15%] right-[-15%] w-72 h-72 bg-purple-200 dark:bg-purple-900/40 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[80px] opacity-45 animate-blob animation-delay-2000" style="will-change: transform; transform: translateZ(0);"></div>
+            <div class="absolute bottom-[-8%] left-[5%] w-80 h-80 bg-pink-100 dark:bg-indigo-700/30 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-[100px] opacity-50 animate-blob animation-delay-4000" style="will-change: transform; transform: translateZ(0);"></div>
         </div>
     </div>
 
@@ -301,13 +304,11 @@
                     <!-- Center + button -->
                     <button onclick="openActionSheet()" id="nav-add"
                         class="flex items-center justify-center w-12 h-12 -mt-5
-                        bg-indigo-500 dark:bg-indigo-500
                         text-white rounded-full
-                        shadow-[0_6px_20px_rgba(99,102,241,0.5),inset_0_1.5px_0_rgba(255,255,255,0.35)]
-                        dark:shadow-[0_6px_20px_rgba(99,102,241,0.4),inset_0_1.5px_0_rgba(255,255,255,0.25)]
-                        border border-white/20
-                        hover:bg-indigo-400 active:scale-95 transition-all duration-200">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
+                        border border-white/25
+                        hover:opacity-90 active:scale-95 transition-all duration-200"
+                        style="background: #007AFF; box-shadow: 0 4px 16px rgba(0,122,255,0.45)">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
                     </button>
 
                     <!-- Report -->
