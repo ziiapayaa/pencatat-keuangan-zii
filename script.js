@@ -47,7 +47,8 @@
         });
 
         function loginWithGoogle() {
-            auth.signInWithPopup(googleProvider).catch(error => {
+            // Mengubah Popup menjadi Redirect karena lebih stabil di HP & tidak diblokir browser
+            auth.signInWithRedirect(googleProvider).catch(error => {
                 showGlassNotif('Login Gagal', error.message, { type: 'error' });
             });
         }
