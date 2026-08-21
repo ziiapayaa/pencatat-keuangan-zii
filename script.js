@@ -165,7 +165,7 @@
         const i18n = {
             id: {
                 home: 'Beranda', add: 'Tambah', report: 'Laporan', settings: 'Pengaturan',
-                greeting: 'Halo, Zii!', totalBalance: 'Saldo Total', income: 'Pemasukan', expense: 'Pengeluaran',
+                greeting: 'Halo,', totalBalance: 'Saldo Total', income: 'Pemasukan', expense: 'Pengeluaran',
                 historyTitle: 'Riwayat Transaksi', seeAll: 'Lihat Semua',
                 reportTitle: 'Laporan Keuangan', expensePerCat: 'Pengeluaran Per Kategori', expenseDetail: 'Rincian Pengeluaran',
                 exportCsv: 'Ekspor Laporan CSV', importCsv: 'Impor Data CSV', darkMode: 'Mode Gelap', language: 'Bahasa', resetData: 'Hapus Semua Data',
@@ -179,7 +179,7 @@
             },
             en: {
                 home: 'Home', add: 'Add', report: 'Report', settings: 'Settings',
-                greeting: 'Hello, Zii!', totalBalance: 'Total Balance', income: 'Income', expense: 'Expense',
+                greeting: 'Hello,', totalBalance: 'Total Balance', income: 'Income', expense: 'Expense',
                 historyTitle: 'Transaction History', seeAll: 'See All',
                 reportTitle: 'Financial Report', expensePerCat: 'Expense by Category', expenseDetail: 'Expense Breakdown',
                 exportCsv: 'Export CSV', importCsv: 'Import CSV', darkMode: 'Dark Mode', language: 'Language', resetData: 'Clear All Data',
