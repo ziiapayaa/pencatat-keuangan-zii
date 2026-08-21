@@ -431,7 +431,7 @@
                 }
             }
             
-            if (tabId === 'report' && window.chartInstance) {
+            if (tabId === 'report') {
                 renderReport();
             }
         }
