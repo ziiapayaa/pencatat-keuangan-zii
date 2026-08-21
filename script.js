@@ -172,7 +172,7 @@
                 greeting: 'Halo,', totalBalance: 'Saldo Total', income: 'Pemasukan', expense: 'Pengeluaran',
                 historyTitle: 'Riwayat Transaksi', seeAll: 'Lihat Semua',
                 reportTitle: 'Laporan Keuangan', expensePerCat: 'Pengeluaran Per Kategori', expenseDetail: 'Rincian Pengeluaran',
-                exportCsv: 'Ekspor Laporan CSV', importCsv: 'Impor Data CSV', darkMode: 'Mode Gelap', language: 'Bahasa', resetData: 'Hapus Semua Data',
+                exportData: 'Ekspor Data', importCsv: 'Impor Data CSV', darkMode: 'Mode Gelap', language: 'Bahasa', resetData: 'Hapus Semua Data',
                 filter7Days: '7 Hari Terakhir', filter30Days: '30 Hari Terakhir', filterMonth: 'Bulan Ini', filterAllTime: 'Semua Waktu',
                 filterAllType: 'Semua Tipe', typeInc: 'Pemasukan', typeExp: 'Pengeluaran',
                 addTx: 'Tambah Data', editTx: 'Edit Data', amount: 'JUMLAH (RP)', category: 'KATEGORI', date: 'TANGGAL', note: 'CATATAN',
@@ -191,7 +191,7 @@
                 greeting: 'Hello,', totalBalance: 'Total Balance', income: 'Income', expense: 'Expense',
                 historyTitle: 'Transaction History', seeAll: 'See All',
                 reportTitle: 'Financial Report', expensePerCat: 'Expense by Category', expenseDetail: 'Expense Breakdown',
-                exportCsv: 'Export CSV', importCsv: 'Import CSV', darkMode: 'Dark Mode', language: 'Language', resetData: 'Clear All Data',
+                exportData: 'Export Data', importCsv: 'Import CSV', darkMode: 'Dark Mode', language: 'Language', resetData: 'Clear All Data',
                 filter7Days: 'Last 7 Days', filter30Days: 'Last 30 Days', filterMonth: 'This Month', filterAllTime: 'All Time',
                 filterAllType: 'All Types', typeInc: 'Income', typeExp: 'Expense',
                 addTx: 'Add Transaction', editTx: 'Edit Data', amount: 'AMOUNT', category: 'CATEGORY', date: 'DATE', note: 'NOTE',
@@ -1186,13 +1186,155 @@
             reader.readAsText(file);
         }
 
-        function exportCSV() {
-            if (transactions.length === 0) return showGlassNotif(currentLang === 'id' ? 'Tidak Ada Data' : 'No Data', currentLang === 'id' ? 'Belum ada data untuk diekspor.' : 'No data to export.', {type:'info'});
-            let csvContent = "data:text/csv;charset=utf-8,Tanggal,Tipe,Kategori,Catatan,Jumlah\n";
-            transactions.forEach(row => { csvContent += `${row.date},${row.type},${tText(row.category)},${row.note},${row.amount}\n`; });
+        function showExportOptions() {
+            const sourceOpts = [
+                { value: 'transactions', label: currentLang === 'id' ? 'Transaksi' : 'Transactions', selected: true },
+                { value: 'savings', label: currentLang === 'id' ? 'Tabungan' : 'Savings', selected: false }
+            ];
+            openOptionsModal(sourceOpts, (source) => {
+                const formatOpts = [
+                    { value: 'pdf', label: 'PDF Report', selected: true },
+                    { value: 'csv', label: 'CSV File', selected: false }
+                ];
+                setTimeout(() => {
+                    openOptionsModal(formatOpts, (format) => {
+                        const timeOpts = [
+                            { value: 'all', label: currentLang === 'id' ? 'Semua Waktu' : 'All Time', selected: true },
+                            { value: 'month', label: currentLang === 'id' ? 'Bulan Ini' : 'This Month', selected: false },
+                            { value: '30days', label: currentLang === 'id' ? '30 Hari Terakhir' : 'Last 30 Days', selected: false },
+                            { value: '7days', label: currentLang === 'id' ? '7 Hari Terakhir' : 'Last 7 Days', selected: false }
+                        ];
+                        setTimeout(() => {
+                            openOptionsModal(timeOpts, (timeFilter) => {
+                                generateExport(source, format, timeFilter);
+                            });
+                        }, 400); // Wait for modal animation to close
+                    });
+                }, 400);
+            });
+        }
+
+        function generateExport(source, format, timeFilter) {
+            let dataArr = source === 'transactions' ? transactions : savingsData;
+            
+            if (dataArr.length === 0) {
+                return showGlassNotif(currentLang === 'id' ? 'Tidak Ada Data' : 'No Data', currentLang === 'id' ? 'Belum ada data untuk diekspor.' : 'No data to export.', {type:'info'});
+            }
+
+            const now = new Date();
+            let filteredData = dataArr.filter(item => {
+                if (timeFilter === 'all') return true;
+                const d = new Date(item.date);
+                if (timeFilter === 'month') return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+                
+                const diffTime = Math.abs(now - d);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                if (timeFilter === '7days') return diffDays <= 7;
+                if (timeFilter === '30days') return diffDays <= 30;
+                return true;
+            });
+
+            if (filteredData.length === 0) {
+                return showGlassNotif(currentLang === 'id' ? 'Tidak Ada Data' : 'No Data', currentLang === 'id' ? 'Tidak ada data pada periode ini.' : 'No data in this period.', {type:'info'});
+            }
+
+            if (format === 'csv') {
+                exportCSVFiltered(filteredData, source);
+            } else if (format === 'pdf') {
+                exportPDFFiltered(filteredData, source, timeFilter);
+            }
+        }
+
+        function exportCSVFiltered(data, source) {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            if (source === 'transactions') {
+                csvContent += "Tanggal,Tipe,Kategori,Catatan,Jumlah\n";
+                data.forEach(row => { csvContent += `${row.date},${row.type},${tText(row.category)},${row.note},${row.amount}\n`; });
+            } else {
+                csvContent += "Tanggal,Tipe,Catatan,Jumlah\n";
+                data.forEach(row => { csvContent += `${row.date},${row.type},${row.note},${row.amount}\n`; });
+            }
+            
             const link = document.createElement("a"); link.setAttribute("href", encodeURI(csvContent));
-            link.setAttribute("download", "moneytrack.csv"); document.body.appendChild(link);
+            link.setAttribute("download", `MoneyTrack_${source}.csv`); document.body.appendChild(link);
             link.click(); document.body.removeChild(link);
+        }
+
+        function exportPDFFiltered(data, source, timeFilter) {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Title
+                doc.setFontSize(18);
+                doc.setTextColor(33, 37, 41);
+                const title = source === 'transactions' ? (currentLang === 'id' ? 'Laporan Transaksi' : 'Transaction Report') : (currentLang === 'id' ? 'Laporan Tabungan' : 'Savings Report');
+                doc.text(title, 14, 22);
+                
+                // Subtitle (Period)
+                doc.setFontSize(11);
+                doc.setTextColor(108, 117, 125);
+                let periodText = 'All Time';
+                if(timeFilter==='month') periodText = 'This Month';
+                if(timeFilter==='7days') periodText = 'Last 7 Days';
+                if(timeFilter==='30days') periodText = 'Last 30 Days';
+                
+                if (currentLang === 'id') {
+                    if(timeFilter==='all') periodText = 'Semua Waktu';
+                    if(timeFilter==='month') periodText = 'Bulan Ini';
+                    if(timeFilter==='7days') periodText = '7 Hari Terakhir';
+                    if(timeFilter==='30days') periodText = '30 Hari Terakhir';
+                }
+                
+                doc.text(`${currentLang === 'id' ? 'Periode' : 'Period'}: ${periodText}`, 14, 30);
+
+                // Summary
+                let totalIn = 0;
+                let totalOut = 0;
+                data.forEach(item => {
+                    if (item.type === 'income' || item.type === 'nabung') totalIn += item.amount;
+                    else totalOut += item.amount;
+                });
+                
+                doc.setFontSize(11);
+                doc.setTextColor(40, 167, 69);
+                doc.text(`${currentLang === 'id' ? 'Masuk' : 'In'}: Rp ${formatRp(totalIn)}`, 14, 40);
+                doc.setTextColor(220, 53, 69);
+                doc.text(`${currentLang === 'id' ? 'Keluar' : 'Out'}: Rp ${formatRp(totalOut)}`, 80, 40);
+                doc.setTextColor(0, 123, 255);
+                const net = totalIn - totalOut;
+                doc.text(`Net: Rp ${formatRp(net)}`, 146, 40);
+
+                // Table Data
+                const head = source === 'transactions' 
+                    ? [[currentLang === 'id' ? 'Tanggal' : 'Date', currentLang === 'id' ? 'Kategori' : 'Category', currentLang === 'id' ? 'Tipe' : 'Type', currentLang === 'id' ? 'Jumlah' : 'Amount', currentLang === 'id' ? 'Catatan' : 'Note']]
+                    : [[currentLang === 'id' ? 'Tanggal' : 'Date', currentLang === 'id' ? 'Tipe' : 'Type', currentLang === 'id' ? 'Jumlah' : 'Amount', currentLang === 'id' ? 'Catatan' : 'Note']];
+                
+                const body = data.map(item => {
+                    const rowDate = formatDateText(new Date(item.date), 'short');
+                    const rowType = item.type === 'income' || item.type === 'nabung' ? '+' : '-';
+                    if (source === 'transactions') {
+                        return [rowDate, tText(item.category), rowType, `Rp ${formatRp(item.amount)}`, item.note || '-'];
+                    } else {
+                        return [rowDate, rowType, `Rp ${formatRp(item.amount)}`, item.note || '-'];
+                    }
+                });
+
+                doc.autoTable({
+                    startY: 48,
+                    head: head,
+                    body: body,
+                    theme: 'striped',
+                    headStyles: { fillColor: [79, 70, 229] }, // Indigo color
+                    styles: { fontSize: 10, cellPadding: 4 },
+                    alternateRowStyles: { fillColor: [248, 249, 250] }
+                });
+
+                doc.save(`MoneyTrack_${source}.pdf`);
+            } catch (error) {
+                console.error("PDF generation error:", error);
+                showGlassNotif("Error", currentLang === 'id' ? "Gagal membuat PDF. Cek console." : "Failed to create PDF.", {type: 'danger'});
+            }
         }
 
         document.getElementById('transactionForm').addEventListener('submit', (e) => {
