@@ -427,7 +427,20 @@
                 </button>
                 <h2 class="text-lg font-extrabold text-gray-900 dark:text-white tracking-wide drop-shadow-sm flex-1 text-center pr-8" data-i18n="savingHistory">Riwayat Tabungan</h2>
             </div>
-            <div class="flex-1 overflow-y-auto px-4 pb-20 z-10 space-y-6 hide-scrollbar pt-6" id="fullSavingHistoryList">
+            
+            <div class="flex gap-3 px-4 mt-5 mb-4 z-10 shrink-0">
+                <!-- Time Filter Trigger -->
+                <div onclick="showSavingTimeOptions()" class="glass-card flex-1 py-3 px-4 rounded-[1.2rem] flex justify-between items-center cursor-pointer shadow-sm active:scale-95 transition-transform">
+                    <span id="filterSavingTimeDisplay" class="text-[11px] font-extrabold text-gray-800 dark:text-gray-200 tracking-wide" data-i18n="filter30Days">30 Hari Terakhir</span>
+                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+                <!-- Type Filter Trigger -->
+                <div onclick="showSavingTypeOptions()" class="glass-card flex-1 py-3 px-4 rounded-[1.2rem] flex justify-between items-center cursor-pointer shadow-sm active:scale-95 transition-transform">
+                    <span id="filterSavingTypeDisplay" class="text-[11px] font-extrabold text-gray-800 dark:text-gray-200 tracking-wide" data-i18n="filterAllType">Semua Tipe</span>
+                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+            </div>
+            <div class="flex-1 overflow-y-auto px-4 pb-20 z-10 space-y-6 hide-scrollbar " id="fullSavingHistoryList">
             </div>
         </div>
 

@@ -219,7 +219,9 @@
         let currentTab = 'home';
         
         let activeTimeFilter = '30days';
+        let activeSavingTimeFilter = '30days';
         let activeTypeFilter = 'all';
+        let activeSavingTypeFilter = 'all';
 
         let transactions = [];
         let savingsData = [];
@@ -323,6 +325,36 @@
                 const map = { '7days':'filter7Days', '30days':'filter30Days', 'month':'filterMonth', 'all':'filterAllTime'};
                 document.getElementById('filterTimeDisplay').innerText = tText(map[val]);
                 renderFullHistory();
+            });
+        }
+
+        
+        function showSavingTimeOptions() {
+            const opts = [
+                { value: '7days', label: tText('filter7Days'), selected: activeSavingTimeFilter === '7days' },
+                { value: '30days', label: tText('filter30Days'), selected: activeSavingTimeFilter === '30days' },
+                { value: 'month', label: tText('filterMonth'), selected: activeSavingTimeFilter === 'month' },
+                { value: 'all', label: tText('filterAllTime'), selected: activeSavingTimeFilter === 'all' }
+            ];
+            openOptionsModal(opts, (val) => {
+                activeSavingTimeFilter = val;
+                const map = { '7days':'filter7Days', '30days':'filter30Days', 'month':'filterMonth', 'all':'filterAllTime'};
+                document.getElementById('filterSavingTimeDisplay').innerText = tText(map[val]);
+                renderFullSavingHistory();
+            });
+        }
+
+        function showSavingTypeOptions() {
+            const opts = [
+                { value: 'all', label: tText('filterAllType'), selected: activeSavingTypeFilter === 'all' },
+                { value: 'in', label: tText('savingIn'), selected: activeSavingTypeFilter === 'in' },
+                { value: 'out', label: tText('savingOut'), selected: activeSavingTypeFilter === 'out' }
+            ];
+            openOptionsModal(opts, (val) => {
+                activeSavingTypeFilter = val;
+                const map = { 'all':'filterAllType', 'in':'savingIn', 'out':'savingOut'};
+                document.getElementById('filterSavingTypeDisplay').innerText = tText(map[val]);
+                renderFullSavingHistory();
             });
         }
 
@@ -599,11 +631,34 @@
         function renderFullSavingHistory() {
             const list = document.getElementById('fullSavingHistoryList');
             list.innerHTML = '';
+            const now = new Date();
             
-            if (savingsData.length === 0) {
+            let filtered = savingsData.filter(s => {
+                if(activeSavingTypeFilter !== 'all' && s.type !== activeSavingTypeFilter) return false;
+                const sDate = new Date(s.date);
+                if(activeSavingTimeFilter === '7days') {
+                    const diff = (now - sDate) / (1000 * 60 * 60 * 24);
+                    if(diff > 7) return false;
+                } else if(activeSavingTimeFilter === '30days') {
+                    const diff = (now - sDate) / (1000 * 60 * 60 * 24);
+                    if(diff > 30) return false;
+                } else if (activeSavingTimeFilter === 'month') {
+                    if(sDate.getMonth() !== now.getMonth() || sDate.getFullYear() !== now.getFullYear()) return false;
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
                 list.innerHTML = `<div class="text-center text-gray-400 dark:text-gray-500 py-10 font-bold">${tText('noData')}</div>`;
                 return;
             }
+
+            // MENGURUTKAN BERDASARKAN TANGGAL DAN ID
+            const sorted = filtered.sort((a,b) => {
+                const dateDiff = new Date(b.date) - new Date(a.date);
+                if (dateDiff !== 0) return dateDiff;
+                return b.id - a.id; 
+            });
 
             // Group by month
             const grouped = {};
