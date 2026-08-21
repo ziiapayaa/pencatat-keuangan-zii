@@ -33,6 +33,7 @@
                 
                 // Fetch user data
                 loadFromFirestore();
+                renderSavings();
             } else {
                 currentUser = null;
                 const loginScreen = document.getElementById('loginScreen');
@@ -395,42 +396,227 @@
         }
 
         function switchTab(tabId) {
-            if (currentTab === tabId) return; // skip if already on this tab
             currentTab = tabId;
-            requestAnimationFrame(() => {
-                document.querySelectorAll('.tab-content').forEach(el => { el.classList.add('hidden'); el.classList.remove('flex'); });
-                const activeTab = document.getElementById(`tab-${tabId}`);
-                if (activeTab) { activeTab.classList.remove('hidden'); activeTab.classList.add('flex'); }
-                
-                if(tabId === 'home' || tabId === 'report') {
-                    document.querySelectorAll('.nav-item').forEach(el => {
-                        if(el.id === 'nav-add') return;
-                        el.classList.remove('nav-item-active');
-                        const svg = el.querySelector('svg'); const span = el.querySelector('span');
-                        svg.classList.remove('text-gray-900', 'dark:text-white'); svg.classList.add('text-gray-500', 'dark:text-gray-400');
-                        span.classList.remove('text-gray-900', 'dark:text-white'); span.classList.add('text-gray-500', 'dark:text-gray-400');
-                        if(el.id === 'nav-home') {
-                            svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" fill="none" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>';
-                            svg.setAttribute('stroke', 'currentColor'); svg.removeAttribute('fill');
-                        }
-                    });
-                    
-                    const activeBtn = document.getElementById(`nav-${tabId}`);
-                    if (activeBtn) {
-                        activeBtn.classList.add('nav-item-active');
-                        const activeSvg = activeBtn.querySelector('svg'); const activeSpan = activeBtn.querySelector('span');
-                        activeSvg.classList.remove('text-gray-500', 'dark:text-gray-400'); activeSvg.classList.add('text-gray-900', 'dark:text-white');
-                        activeSpan.classList.remove('text-gray-500', 'dark:text-gray-400'); activeSpan.classList.add('text-gray-900', 'dark:text-white');
-
-                        if(tabId === 'home') {
-                            activeSvg.innerHTML = '<path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>';
-                            activeSvg.setAttribute('fill', 'currentColor'); activeSvg.removeAttribute('stroke');
-                        }
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('tab-enter', 'flex');
+            });
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('nav-item-active');
+                const svg = el.querySelector('svg'); const span = el.querySelector('span');
+                if(svg && span) {
+                    svg.classList.remove('text-gray-900', 'dark:text-white'); svg.classList.add('text-gray-500', 'dark:text-gray-400');
+                    span.classList.remove('text-gray-900', 'dark:text-white'); span.classList.add('text-gray-500', 'dark:text-gray-400');
+                }
+            });
+            
+            const targetTab = document.getElementById('tab-' + tabId);
+            if (targetTab) {
+                targetTab.classList.remove('hidden');
+                targetTab.classList.add('flex', 'tab-enter');
+            }
+            
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('nav-item-active');
+                const activeSvg = activeBtn.querySelector('svg'); const activeSpan = activeBtn.querySelector('span');
+                if (activeSvg && activeSpan) {
+                    activeSvg.classList.remove('text-gray-500', 'dark:text-gray-400'); activeSvg.classList.add('text-gray-900', 'dark:text-white');
+                    activeSpan.classList.remove('text-gray-500', 'dark:text-gray-400'); activeSpan.classList.add('text-gray-900', 'dark:text-white');
+                    if(tabId === 'home') {
+                        activeSvg.innerHTML = '<path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>';
+                        activeSvg.setAttribute('fill', 'currentColor'); activeSvg.removeAttribute('stroke');
                     }
                 }
-                if (tabId === 'report') renderReport();
-                if (tabId === 'home') updateDashboard();
+            }
+            
+            if (tabId === 'report' && window.chartInstance) {
+                renderReport();
+            }
+        }
+
+
+        function openActionSheet() {
+            const el = document.getElementById('actionSheetModal');
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+            setTimeout(() => {
+                el.children[0].classList.remove('opacity-0');
+                el.children[1].classList.remove('translate-y-full');
+            }, 10);
+        }
+
+        function closeActionSheet() {
+            const el = document.getElementById('actionSheetModal');
+            el.children[0].classList.add('opacity-0');
+            el.children[1].classList.add('translate-y-full');
+            setTimeout(() => {
+                el.classList.remove('flex');
+                el.classList.add('hidden');
+            }, 300);
+        }
+
+        function openSavingModal(savingId = null) {
+            document.getElementById('savingForm').reset();
+            document.getElementById('savingDate').value = new Date().toISOString().split('T')[0];
+            
+            if (savingId) {
+                document.getElementById('savingModalTitle').innerText = tText('editSavingTitle') || 'Edit Tabungan';
+                document.getElementById('savingForm').dataset.editing = savingId;
+                document.getElementById('deleteSavingBtn').classList.remove('hidden');
+                
+                savingsRef.doc(savingId).get().then(doc => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        document.querySelector(`input[name="savingType"][value="${data.type}"]`).checked = true;
+                        document.getElementById('savingAmount').value = data.amount.toLocaleString('id-ID');
+                        document.getElementById('savingDate').value = data.date;
+                        document.getElementById('savingNote').value = data.note || '';
+                    }
+                });
+            } else {
+                document.getElementById('savingModalTitle').innerText = tText('addSavingTitle') || 'Catat Tabungan';
+                delete document.getElementById('savingForm').dataset.editing;
+                document.getElementById('deleteSavingBtn').classList.add('hidden');
+            }
+
+            const el = document.getElementById('addSavingModal');
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+            setTimeout(() => {
+                el.children[0].classList.remove('opacity-0');
+                el.children[1].classList.remove('translate-y-full');
+            }, 10);
+        }
+
+        function closeSavingModal() {
+            const el = document.getElementById('addSavingModal');
+            el.children[0].classList.add('opacity-0');
+            el.children[1].classList.add('translate-y-full');
+            setTimeout(() => {
+                el.classList.remove('flex');
+                el.classList.add('hidden');
+            }, 300);
+        }
+
+        function renderSavings() {
+            if (!savingsRef) return;
+            
+            savingsRef.orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+                let totalSaving = 0;
+                let totalIn = 0;
+                let totalOut = 0;
+                let listHtml = '';
+                
+                if (snapshot.empty) {
+                    document.getElementById('savingList').innerHTML = `<div class="flex items-center justify-center h-20"><p class="text-sm font-bold text-gray-400 dark:text-gray-500">${tText('noData')||'Belum ada data.'}</p></div>`;
+                    document.getElementById('totalSavingBal').innerText = 'Rp 0';
+                    document.getElementById('savingIncome').innerText = 'Rp 0';
+                    document.getElementById('savingExpense').innerText = 'Rp 0';
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const amount = parseFloat(data.amount);
+                    
+                    if (data.type === 'in') {
+                        totalSaving += amount;
+                        totalIn += amount;
+                    } else {
+                        totalSaving -= amount;
+                        totalOut += amount;
+                    }
+
+                    const isIncome = data.type === 'in';
+                    const colorClass = isIncome ? 'text-emerald-500' : 'text-red-500';
+                    const iconBg = isIncome ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-400';
+                    const iconPath = isIncome ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m0 0l-4-4m4 4l4-4"></path>' : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m0 0l-4-4m4 4l4-4" transform="rotate(180 12 12)"></path>';
+                    const titleText = isIncome ? 'Nabung' : 'Tarik Dana';
+
+                    listHtml += `
+                        <div onclick="openSavingModal('${doc.id}')" class="glass-card rounded-[1.25rem] p-3.5 flex items-center justify-between cursor-pointer hover:bg-white/80 dark:hover:bg-black/30 transition shadow-sm border border-white/60 dark:border-white/5 active:scale-[0.98]">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-11 h-11 rounded-2xl flex items-center justify-center ${iconBg} shadow-sm shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">${iconPath}</svg>
+                                </div>
+                                <div class="min-w-0">
+                                    <h4 class="font-extrabold text-gray-900 dark:text-white text-[15px] tracking-tight truncate">${data.note || titleText}</h4>
+                                    <p class="text-[11px] font-bold text-gray-400 dark:text-gray-500 truncate mt-0.5">${new Date(data.date).toLocaleDateString(currentLang==='id'?'id-ID':'en-US', {day:'numeric', month:'short', year:'numeric'})}</p>
+                                </div>
+                            </div>
+                            <div class="text-right pl-2 shrink-0">
+                                <p class="font-black ${colorClass} text-[15px] drop-shadow-sm tracking-tight">${isIncome ? '+' : '-'}Rp ${amount.toLocaleString('id-ID')}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('savingList').innerHTML = listHtml;
+                document.getElementById('totalSavingBal').innerText = 'Rp ' + totalSaving.toLocaleString('id-ID');
+                document.getElementById('savingIncome').innerText = 'Rp ' + totalIn.toLocaleString('id-ID');
+                document.getElementById('savingExpense').innerText = 'Rp ' + totalOut.toLocaleString('id-ID');
             });
+        }
+
+        document.getElementById('savingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const amountStr = document.getElementById('savingAmount').value.replace(/\./g, '');
+            const amount = parseFloat(amountStr);
+            if (!amount) return;
+
+            const type = document.querySelector('input[name="savingType"]:checked').value;
+            const date = document.getElementById('savingDate').value;
+            const note = document.getElementById('savingNote').value;
+            
+            const btn = document.getElementById('submitSavingBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<svg class="animate-spin h-5 w-5 mx-auto text-white" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+            btn.disabled = true;
+
+            const savingData = {
+                amount: amount,
+                type: type,
+                date: date,
+                note: note,
+                timestamp: new Date(date).getTime()
+            };
+
+            const editingId = this.dataset.editing;
+            let p;
+
+            if (editingId) {
+                p = savingsRef.doc(editingId).update(savingData);
+            } else {
+                p = savingsRef.add(savingData);
+            }
+
+            p.then(() => {
+                closeSavingModal();
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                showGlassNotif(tText('success')||'Berhasil', editingId ? (tText('updateSuccess')||'Data diperbarui.') : (tText('addSuccess')||'Data disimpan.'));
+            }).catch(err => {
+                console.error("Error saving tabungan:", err);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                showGlassNotif(tText('error')||'Gagal', err.message, { type: 'error' });
+            });
+        });
+
+        function deleteCurrentSaving() {
+            const id = document.getElementById('savingForm').dataset.editing;
+            if (!id) return;
+            
+            if (confirm(tText('deleteConfirm') || "Apakah Anda yakin ingin menghapus data ini?")) {
+                savingsRef.doc(id).delete().then(() => {
+                    closeSavingModal();
+                    showGlassNotif(tText('success')||'Berhasil', tText('deleteSuccess')||'Data dihapus.');
+                }).catch(err => {
+                    console.error("Error deleting tabungan:", err);
+                    showGlassNotif(tText('error')||'Gagal', err.message, { type: 'error' });
+                });
+            }
         }
 
         function updateDashboard() {
