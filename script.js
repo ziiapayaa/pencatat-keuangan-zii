@@ -749,7 +749,7 @@
             let csvContent = "data:text/csv;charset=utf-8,Tanggal,Tipe,Kategori,Catatan,Jumlah\n";
             transactions.forEach(row => { csvContent += `${row.date},${row.type},${tText(row.category)},${row.note},${row.amount}\n`; });
             const link = document.createElement("a"); link.setAttribute("href", encodeURI(csvContent));
-            link.setAttribute("download", "catatuang.csv"); document.body.appendChild(link);
+            link.setAttribute("download", "moneytrack.csv"); document.body.appendChild(link);
             link.click(); document.body.removeChild(link);
         }
 
