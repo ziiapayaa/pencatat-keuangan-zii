@@ -435,6 +435,10 @@
         }
 
         function initApp() {
+            syncDarkModeToggle();
+        }
+
+        function syncDarkModeToggle() {
             const toggleBtn = document.getElementById('darkModeToggle');
             isDark = document.documentElement.classList.contains('dark');
             if (toggleBtn) toggleBtn.checked = isDark;
@@ -485,6 +489,9 @@
             
             if (tabId === 'report') {
                 renderReport();
+            }
+            if (tabId === 'profile') {
+                syncDarkModeToggle();
             }
         }
 
@@ -1123,16 +1130,23 @@
             const isId = currentLang === 'id';
             const result = await showGlassConfirm(
                 isId ? 'Hapus Semua Data' : 'Delete All Data',
-                isId ? 'Semua data transaksi akan dihapus permanen dan tidak bisa dikembalikan.' : 'All transaction data will be permanently deleted and cannot be recovered.',
+                isId ? 'Semua data transaksi dan tabungan akan dihapus permanen dan tidak bisa dikembalikan.' : 'All transaction and savings data will be permanently deleted and cannot be recovered.',
                 { confirmText: isId ? 'Hapus Semua' : 'Delete All', cancelText: isId ? 'Batal' : 'Cancel' }
             );
             if (result === 1) {
+                // Hapus semua transaksi
                 transactions.forEach(t => { getUserTransactionsRef().doc(String(t.id)).delete(); });
                 transactions = [];
+                // Hapus semua tabungan
+                savingsData.forEach(s => { getUserSavingsRef().doc(String(s.id)).delete(); });
+                savingsData = [];
+                
                 updateDashboard();
+                renderSavingsDashboard();
                 if(!document.getElementById('fullHistoryScreen').classList.contains('translate-x-full')) renderFullHistory();
                 if (currentTab === 'report') renderReport();
                 closeOptionsModal();
+                showGlassNotif(isId ? 'Berhasil' : 'Success', isId ? 'Semua data telah dihapus.' : 'All data has been deleted.', {type: 'success'});
             }
         }
 
