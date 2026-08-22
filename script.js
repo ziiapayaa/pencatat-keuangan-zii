@@ -796,14 +796,23 @@
             });
         });
 
-        function deleteCurrentSaving() {
+        async function deleteCurrentSaving() {
             const id = document.getElementById('savingForm').dataset.editing;
             if (!id) return;
             
-            if (confirm(tText('deleteConfirm') || "Apakah Anda yakin ingin menghapus data ini?")) {
+            const result = await showGlassConfirm(
+                currentLang === 'id' ? 'Hapus Data' : 'Delete Data',
+                currentLang === 'id' ? 'Yakin ingin menghapus data tabungan ini? Tindakan ini tidak bisa dibatalkan.' : 'Are you sure you want to delete this savings record? This action cannot be undone.',
+                { confirmText: currentLang === 'id' ? 'Hapus' : 'Delete', cancelText: currentLang === 'id' ? 'Batal' : 'Cancel' }
+            );
+            if (result === 1) {
                 savingsRef.doc(id).delete().then(() => {
                     closeSavingModal();
-                    showGlassNotif(tText('success')||'Berhasil', tText('deleteSuccess')||'Data dihapus.');
+                    showGlassNotif(
+                        currentLang === 'id' ? 'Berhasil' : 'Success',
+                        currentLang === 'id' ? 'Data tabungan berhasil dihapus.' : 'Savings record deleted successfully.',
+                        { type: 'success' }
+                    );
                 }).catch(err => {
                     console.error("Error deleting tabungan:", err);
                     showGlassNotif(tText('error')||'Gagal', err.message, { type: 'error' });
@@ -1171,6 +1180,11 @@
                 updateDashboard();
                 if(!document.getElementById('fullHistoryScreen').classList.contains('translate-x-full')) renderFullHistory();
                 if (currentTab === 'report') renderReport();
+                showGlassNotif(
+                    currentLang === 'id' ? 'Berhasil' : 'Success',
+                    currentLang === 'id' ? 'Data transaksi berhasil dihapus.' : 'Transaction deleted successfully.',
+                    { type: 'success' }
+                );
             }
         }
 
