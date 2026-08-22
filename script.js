@@ -98,6 +98,62 @@
             return db.collection('users').doc(currentUser.uid).collection('transactions');
         }
 
+        // --- TOAST NOTIFICATION (auto-dismiss, no interaction needed) ---
+        let toastTimeout = null;
+        function showToast(title, message, type = 'success') {
+            const colorMap = {
+                success: { bar: '#34C759', icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>' },
+                error:   { bar: '#FF3B30', icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path>' },
+                info:    { bar: '#007AFF', icon: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>' }
+            };
+            const c = colorMap[type] || colorMap.info;
+
+            let container = document.getElementById('toastContainer');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toastContainer';
+                container.style.cssText = 'position:fixed;top:calc(env(safe-area-inset-top,0px) + 16px);left:50%;transform:translateX(-50%);z-index:99999;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:calc(100% - 40px);max-width:360px;';
+                document.body.appendChild(container);
+            }
+
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                width:100%;background:${document.documentElement.classList.contains('dark') ? 'rgba(30,30,32,0.92)' : 'rgba(255,255,255,0.92)'};
+                backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
+                border-radius:16px;padding:12px 16px;display:flex;align-items:center;gap:12px;
+                box-shadow:0 8px 32px rgba(0,0,0,0.18),0 1px 3px rgba(0,0,0,0.08);
+                border:0.5px solid ${document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.07)'};
+                transform:translateY(-20px) scale(0.95);opacity:0;
+                transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1),opacity 0.3s ease;
+                pointer-events:none;
+            `;
+            toast.innerHTML = `
+                <div style="width:32px;height:32px;border-radius:50%;background:${c.bar}22;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <svg width="16" height="16" fill="none" stroke="${c.bar}" viewBox="0 0 24 24">${c.icon}</svg>
+                </div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-weight:800;font-size:13px;color:${document.documentElement.classList.contains('dark') ? '#fff' : '#000'};line-height:1.2;">${title}</div>
+                    <div style="font-size:12px;color:${document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.5)'};margin-top:2px;line-height:1.3;">${message}</div>
+                </div>
+                <div style="width:3px;height:32px;border-radius:2px;background:${c.bar};flex-shrink:0;"></div>
+            `;
+            container.appendChild(toast);
+
+            // Animate in
+            requestAnimationFrame(() => {
+                toast.style.transform = 'translateY(0) scale(1)';
+                toast.style.opacity = '1';
+            });
+
+            // Auto-dismiss after 3s
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.style.transform = 'translateY(-20px) scale(0.95)';
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 350);
+            }, 3000);
+        }
+
         // --- CUSTOM GLASS NOTIFICATION SYSTEM (iOS Style) ---
         let glassNotifResolve = null;
 
@@ -742,10 +798,10 @@
             );
             if (result === 1 && savingsRef) {
                 savingsRef.doc(String(id)).delete().then(() => {
-                    showGlassNotif(tText('success')||'Berhasil', tText('deleteSuccess')||'Data dihapus.');
+                    showToast(tText('success')||'Berhasil', tText('deleteSuccess')||'Data dihapus.', 'success');
                 }).catch(err => {
                     console.error("Error deleting tabungan:", err);
-                    showGlassNotif(tText('error')||'Gagal', err.message, { type: 'error' });
+                    showToast(tText('error')||'Gagal', err.message, 'error');
                 });
             }
         }
@@ -787,12 +843,12 @@
                 closeSavingModal();
                 btn.innerHTML = originalText;
                 btn.disabled = false;
-                showGlassNotif(tText('success')||'Berhasil', editingId ? (tText('updateSuccess')||'Data diperbarui.') : (tText('addSuccess')||'Data disimpan.'));
+                showToast(tText('success')||'Berhasil', editingId ? (tText('updateSuccess')||'Data diperbarui.') : (tText('addSuccess')||'Data disimpan.'), 'success');
             }).catch(err => {
                 console.error("Error saving tabungan:", err);
                 btn.innerHTML = originalText;
                 btn.disabled = false;
-                showGlassNotif(tText('error')||'Gagal', err.message, { type: 'error' });
+                showToast(tText('error')||'Gagal', err.message, 'error');
             });
         });
 
@@ -808,14 +864,14 @@
             if (result === 1) {
                 savingsRef.doc(id).delete().then(() => {
                     closeSavingModal();
-                    showGlassNotif(
+                    showToast(
                         currentLang === 'id' ? 'Berhasil' : 'Success',
                         currentLang === 'id' ? 'Data tabungan berhasil dihapus.' : 'Savings record deleted successfully.',
-                        { type: 'success' }
+                        'success'
                     );
                 }).catch(err => {
                     console.error("Error deleting tabungan:", err);
-                    showGlassNotif(tText('error')||'Gagal', err.message, { type: 'error' });
+                    showToast(tText('error')||'Gagal', err.message, 'error');
                 });
             }
         }
@@ -1180,10 +1236,10 @@
                 updateDashboard();
                 if(!document.getElementById('fullHistoryScreen').classList.contains('translate-x-full')) renderFullHistory();
                 if (currentTab === 'report') renderReport();
-                showGlassNotif(
+                showToast(
                     currentLang === 'id' ? 'Berhasil' : 'Success',
                     currentLang === 'id' ? 'Data transaksi berhasil dihapus.' : 'Transaction deleted successfully.',
-                    { type: 'success' }
+                    'success'
                 );
             }
         }
@@ -1540,7 +1596,7 @@
             if(!document.getElementById('fullHistoryScreen').classList.contains('translate-x-full')) renderFullHistory();
             if (currentTab === 'report') renderReport(); 
             closeModal();
-            showGlassNotif(currentLang === 'id' ? 'Berhasil' : 'Success', currentLang === 'id' ? 'Data transaksi berhasil disimpan.' : 'Transaction data saved successfully.', {type: 'success'});
+            showToast(currentLang === 'id' ? 'Berhasil' : 'Success', currentLang === 'id' ? 'Data transaksi berhasil disimpan.' : 'Transaction data saved successfully.', 'success');
         });
 
         // Apply language immediately before first paint
