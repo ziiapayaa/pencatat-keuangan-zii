@@ -386,7 +386,6 @@
             const opts = [
                 { value: '7days', label: tText('filter7Days'), selected: activeTimeFilter === '7days' },
                 { value: '30days', label: tText('filter30Days'), selected: activeTimeFilter === '30days' },
-                { value: 'month', label: tText('filterMonth'), selected: activeTimeFilter === 'month' },
                 { value: 'all', label: tText('filterAllTime'), selected: activeTimeFilter === 'all' }
             ];
             openOptionsModal(opts, (val) => {
@@ -402,7 +401,6 @@
             const opts = [
                 { value: '7days', label: tText('filter7Days'), selected: activeSavingTimeFilter === '7days' },
                 { value: '30days', label: tText('filter30Days'), selected: activeSavingTimeFilter === '30days' },
-                { value: 'month', label: tText('filterMonth'), selected: activeSavingTimeFilter === 'month' },
                 { value: 'all', label: tText('filterAllTime'), selected: activeSavingTimeFilter === 'all' }
             ];
             openOptionsModal(opts, (val) => {
@@ -1353,7 +1351,6 @@
                     openOptionsModal(formatOpts, (format) => {
                         const timeOpts = [
                             { value: 'all', label: currentLang === 'id' ? 'Semua Waktu' : 'All Time', selected: false },
-                            { value: 'month', label: currentLang === 'id' ? 'Bulan Ini' : 'This Month', selected: false },
                             { value: '30days', label: currentLang === 'id' ? '30 Hari Terakhir' : 'Last 30 Days', selected: false },
                             { value: '7days', label: currentLang === 'id' ? '7 Hari Terakhir' : 'Last 7 Days', selected: false }
                         ];
