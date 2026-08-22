@@ -991,49 +991,93 @@
 
             const expenseData = {};
             let totalExpenseSum = 0;
-            transactions.filter(t => t.type === 'expense').forEach(t => {
-                expenseData[t.category] = (expenseData[t.category] || 0) + t.amount;
-                totalExpenseSum += t.amount;
+            let totalIncomeSum = 0;
+
+            transactions.forEach(t => {
+                if (t.type === 'expense') {
+                    expenseData[t.category] = (expenseData[t.category] || 0) + t.amount;
+                    totalExpenseSum += t.amount;
+                } else if (t.type === 'income') {
+                    totalIncomeSum += t.amount;
+                }
             });
+
+            // Update Summary Cards
+            document.getElementById('reportTotalIncome').innerText = 'Rp ' + formatRp(totalIncomeSum);
+            document.getElementById('reportTotalExpense').innerText = 'Rp ' + formatRp(totalExpenseSum);
+            document.getElementById('reportChartTotal').innerText = 'Rp ' + formatRp(totalExpenseSum);
 
             const categoriesArr = Object.keys(expenseData);
             const amountsArr = Object.values(expenseData);
             if (chartInstance) chartInstance.destroy();
 
             if (categoriesArr.length === 0) {
-                breakdownList.innerHTML = `<div class="text-center text-gray-400 py-6 text-sm font-bold">${i18n[currentLang].emptyTx}</div>`;
+                breakdownList.innerHTML = `<div class="text-center text-gray-400 py-10 text-sm font-bold">${i18n[currentLang].emptyTx}</div>`;
                 chartInstance = new Chart(ctx, {
-                    type: 'doughnut', data: { labels: ['Empty'], datasets: [{ data: [1], backgroundColor: ['#e5e7eb'] }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                    type: 'doughnut', data: { labels: ['Empty'], datasets: [{ data: [1], backgroundColor: ['#e5e7eb'], borderWidth: 0 }] },
+                    options: { responsive: true, maintainAspectRatio: false, cutout: '80%', plugins: { legend: { display: false }, tooltip: { enabled: false } } }
                 }); return;
             }
 
             const colors = ['#f87171', '#60a5fa', '#facc15', '#4ade80', '#c084fc', '#fb923c', '#a7f3d0'];
-            // BUGFIX: dulu pake colors.slice() jadi warna abis/undefined kalau kategori > 7.
-            // Sekarang looping pake modulo, sama kaya breakdown list, biar selalu ada warna & konsisten.
             const chartColors = categoriesArr.map((_, i) => colors[i % colors.length]);
+            
             chartInstance = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: categoriesArr.map(c => tText(c)),
-                    datasets: [{ data: amountsArr, backgroundColor: chartColors, borderWidth: 0 }]
+                    datasets: [{ data: amountsArr, backgroundColor: chartColors, borderWidth: 0, hoverOffset: 4 }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: isDark ? '#fff' : '#374151', font: { size: 11, weight: 'bold' } } } } }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    cutout: '80%', // Make it a thin, elegant ring
+                    plugins: { 
+                        legend: { display: false }, // Hide default legend
+                        tooltip: {
+                            backgroundColor: isDark ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.9)',
+                            titleColor: isDark ? '#fff' : '#000',
+                            bodyColor: isDark ? '#fff' : '#000',
+                            borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                            borderWidth: 1,
+                            padding: 12,
+                            boxPadding: 6,
+                            usePointStyle: true,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) label += ': ';
+                                    if (context.parsed !== null) label += 'Rp ' + formatRp(context.parsed);
+                                    return label;
+                                }
+                            }
+                        }
+                    } 
+                }
             });
 
-            categoriesArr.forEach((cat, index) => {
+            // Sort breakdown by highest expense
+            const sortedCategories = categoriesArr.sort((a, b) => expenseData[b] - expenseData[a]);
+
+            sortedCategories.forEach((cat, index) => {
                 const amount = expenseData[cat];
                 const percent = ((amount / totalExpenseSum) * 100).toFixed(1);
                 const color = colors[index % colors.length];
+                
                 breakdownList.insertAdjacentHTML('beforeend', `
-                    <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/40 dark:bg-black/20">
-                        <div class="flex items-center gap-2">
-                            <span class="w-3 h-3 rounded-full" style="background-color: ${color}"></span>
-                            <span class="font-bold text-xs text-gray-800 dark:text-white">${tText(cat)}</span>
+                    <div class="flex flex-col gap-2 p-3.5 rounded-[1.25rem] bg-white/40 dark:bg-white/5 border border-white/50 dark:border-white/5 transition-transform hover:scale-[1.02]">
+                        <div class="flex items-center justify-between px-1">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-3.5 h-3.5 rounded-full shadow-sm" style="background-color: ${color}"></span>
+                                <span class="font-extrabold text-[13px] text-gray-900 dark:text-white tracking-tight">${tText(cat)}</span>
+                            </div>
+                            <div class="text-right flex flex-col justify-center">
+                                <span class="font-black text-[14px] text-gray-900 dark:text-white drop-shadow-sm leading-none">Rp ${formatRp(amount)}</span>
+                                <span class="text-[10px] font-bold text-gray-400 dark:text-gray-500 mt-1">${percent}%</span>
+                            </div>
                         </div>
-                        <div class="text-right">
-                            <span class="font-black text-xs text-gray-900 dark:text-white">Rp ${formatRp(amount)}</span>
-                            <span class="text-[10px] text-gray-400 block">${percent}%</span>
+                        <div class="w-full bg-black/5 dark:bg-white/10 rounded-full h-1.5 mt-1 overflow-hidden">
+                            <div class="h-1.5 rounded-full transition-all duration-1000 ease-out" style="width: ${percent}%; background-color: ${color}"></div>
                         </div>
                     </div>
                 `);
