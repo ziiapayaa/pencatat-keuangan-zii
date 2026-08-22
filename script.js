@@ -233,7 +233,11 @@
                 const snapshot = await getUserTransactionsRef().get();
                 transactions = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 // Sort by date descending
-                transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+                transactions.sort((a, b) => {
+                    const dateDiff = new Date(b.date) - new Date(a.date);
+                    if (dateDiff !== 0) return dateDiff;
+                    return (b.timestamp || 0) - (a.timestamp || 0);
+                });
                 updateDashboard();
                 if(!document.getElementById('fullHistoryScreen').classList.contains('translate-x-full')) renderFullHistory();
                 if (currentTab === 'report') renderReport();
@@ -669,11 +673,11 @@
                 return;
             }
 
-            // MENGURUTKAN BERDASARKAN TANGGAL DAN ID
+            // MENGURUTKAN BERDASARKAN TANGGAL DAN TIMESTAMP
             const sorted = filtered.sort((a,b) => {
                 const dateDiff = new Date(b.date) - new Date(a.date);
                 if (dateDiff !== 0) return dateDiff;
-                return b.id - a.id; 
+                return (b.timestamp || 0) - (a.timestamp || 0);
             });
 
             // Group by month
@@ -834,11 +838,11 @@
                 list.innerHTML = `<div class="text-center text-gray-400 dark:text-gray-500 py-4 text-xs font-bold">${i18n[currentLang].emptyTx}</div>`; return;
             }
 
-            // MENGURUTKAN BERDASARKAN TANGGAL DAN ID
+            // MENGURUTKAN BERDASARKAN TANGGAL DAN TIMESTAMP
             const sorted = [...transactions].sort((a,b) => {
                 const dateDiff = new Date(b.date) - new Date(a.date);
                 if (dateDiff !== 0) return dateDiff;
-                return b.id - a.id; 
+                return (b.timestamp || 0) - (a.timestamp || 0); // tiebreaker: yang lebih baru di atas
             }).slice(0, 5);
 
             sorted.forEach(t => {
@@ -908,11 +912,11 @@
                 container.innerHTML = `<div class="text-center text-gray-400 py-10 text-sm font-bold">${i18n[currentLang].emptyTx}</div>`; return;
             }
 
-            // MENGURUTKAN BERDASARKAN TANGGAL DAN ID
+            // MENGURUTKAN BERDASARKAN TANGGAL DAN TIMESTAMP
             const sorted = filtered.sort((a,b) => {
                 const dateDiff = new Date(b.date) - new Date(a.date);
                 if (dateDiff !== 0) return dateDiff;
-                return b.id - a.id; 
+                return (b.timestamp || 0) - (a.timestamp || 0);
             });
             const groups = {};
 
@@ -1463,7 +1467,7 @@
                 }
             }
             
-            const txData = { type, amount, category, date, note };
+            const txData = { type, amount, category, date, note, timestamp: Date.now() };
             if (editingId) {
                 getUserTransactionsRef().doc(String(editingId)).update(txData);
                 const idx = transactions.findIndex(t => t.id === editingId);
@@ -1471,7 +1475,7 @@
             } else {
                 const newDocRef = getUserTransactionsRef().doc();
                 newDocRef.set(txData);
-                transactions.push({ id: newDocRef.id, ...txData });
+                transactions.unshift({ id: newDocRef.id, ...txData });
             }
             
             updateDashboard(); 
