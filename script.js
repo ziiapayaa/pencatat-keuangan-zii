@@ -771,7 +771,7 @@
                 type: type,
                 date: date,
                 note: note,
-                timestamp: new Date(date).getTime()
+                timestamp: Date.now()
             };
 
             const editingId = this.dataset.editing;
