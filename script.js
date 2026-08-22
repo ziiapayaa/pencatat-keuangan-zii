@@ -127,7 +127,6 @@
                 transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1),opacity 0.3s ease;
                 pointer-events:none;
             `;
-            toast.innerHTML = `
                 <div style="width:32px;height:32px;border-radius:50%;background:${c.bar}22;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                     <svg width="16" height="16" fill="none" stroke="${c.bar}" viewBox="0 0 24 24">${c.icon}</svg>
                 </div>
@@ -135,7 +134,6 @@
                     <div style="font-weight:800;font-size:13px;color:${document.documentElement.classList.contains('dark') ? '#fff' : '#000'};line-height:1.2;">${title}</div>
                     <div style="font-size:12px;color:${document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.5)'};margin-top:2px;line-height:1.3;">${message}</div>
                 </div>
-                <div style="width:3px;height:32px;border-radius:2px;background:${c.bar};flex-shrink:0;"></div>
             `;
             container.appendChild(toast);
 
