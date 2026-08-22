@@ -737,7 +737,7 @@
 
             // Group by month
             const grouped = {};
-            savingsData.forEach(s => {
+            sorted.forEach(s => {
                 const dateObj = new Date(s.date);
                 const monthYear = formatDateText(dateObj, 'long') + ' ' + dateObj.getFullYear();
                 if(!grouped[monthYear]) grouped[monthYear] = [];
