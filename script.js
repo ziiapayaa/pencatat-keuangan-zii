@@ -76,9 +76,9 @@
                 
                 // Pesan custom jika popup diblokir
                 if (error.code === 'auth/popup-blocked' || error.code === 'auth/cancelled-popup-request') {
-                    showGlassNotif('Popup Diblokir', 'Tolong izinkan pop-up di browser Anda, atau jangan tutup jendela login terlalu cepat.', { type: 'error' });
+                    showToast('Popup Diblokir', 'Tolong izinkan pop-up di browser Anda, atau jangan tutup jendela login terlalu cepat.', 'error');
                 } else {
-                    showGlassNotif('Login Gagal', error.message, { type: 'error' });
+                    showToast('Login Gagal', error.message, 'error');
                 }
             });
         }
@@ -1277,7 +1277,7 @@
                 }
                 
                 closeOptionsModal();
-                showGlassNotif(isId ? 'Berhasil' : 'Success', isId ? 'Semua data telah dihapus.' : 'All data has been deleted.', {type: 'success'});
+                showToast(isId ? 'Berhasil' : 'Success', isId ? 'Semua data telah dihapus.' : 'All data has been deleted.', 'success');
             }
         }
 
@@ -1294,7 +1294,7 @@
                 try {
                     const text = e.target.result;
                     const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
-                    if (lines.length < 2) { showGlassNotif(currentLang === 'id' ? 'Error' : 'Error', currentLang === 'id' ? 'File CSV kosong atau formatnya salah.' : 'CSV file is empty or invalid.', {type:'warning'}); return; }
+                    if (lines.length < 2) { showToast(currentLang === 'id' ? 'Error' : 'Error', currentLang === 'id' ? 'File CSV kosong atau formatnya salah.' : 'CSV file is empty or invalid.', 'error'); return; }
 
                     // Baris pertama = header (Tanggal,Tipe,Kategori,Catatan,Jumlah), lewati
                     let imported = 0, skipped = 0;
@@ -1325,13 +1325,13 @@
                     if(!document.getElementById('fullHistoryScreen').classList.contains('translate-x-full')) renderFullHistory();
                     if (currentTab === 'report') renderReport();
 
-                    showGlassNotif(
+                    showToast(
                         currentLang === 'id' ? 'Import Berhasil' : 'Import Success',
                         currentLang === 'id' ? `Berhasil: ${imported} data, dilewati: ${skipped} data.` : `Success: ${imported} items, skipped: ${skipped} items.`,
-                        {type:'success'}
+                        'success'
                     );
                 } catch (err) {
-                    showGlassNotif('Error', currentLang === 'id' ? 'Gagal membaca file CSV.' : 'Failed to read CSV file.', {type:'danger'});
+                    showToast('Error', currentLang === 'id' ? 'Gagal membaca file CSV.' : 'Failed to read CSV file.', 'error');
                 } finally {
                     event.target.value = '';
                 }
@@ -1371,7 +1371,7 @@
             let dataArr = source === 'transactions' ? transactions : savingsData;
             
             if (dataArr.length === 0) {
-                return showGlassNotif(currentLang === 'id' ? 'Tidak Ada Data' : 'No Data', currentLang === 'id' ? 'Belum ada data untuk diekspor.' : 'No data to export.', {type:'info'});
+                return showToast(currentLang === 'id' ? 'Tidak Ada Data' : 'No Data', currentLang === 'id' ? 'Belum ada data untuk diekspor.' : 'No data to export.', 'info');
             }
 
             const now = new Date();
@@ -1388,7 +1388,7 @@
             });
 
             if (filteredData.length === 0) {
-                return showGlassNotif(currentLang === 'id' ? 'Tidak Ada Data' : 'No Data', currentLang === 'id' ? 'Tidak ada data pada periode ini.' : 'No data in this period.', {type:'info'});
+                return showToast(currentLang === 'id' ? 'Tidak Ada Data' : 'No Data', currentLang === 'id' ? 'Tidak ada data pada periode ini.' : 'No data in this period.', 'info');
             }
 
             if (format === 'csv') {
@@ -1533,7 +1533,7 @@
                 doc.save(`MoneyTrack_${source}.pdf`);
             } catch (error) {
                 console.error("PDF generation error:", error);
-                showGlassNotif("Error", currentLang === 'id' ? "Gagal membuat PDF. Cek console." : "Failed to create PDF.", {type: 'danger'});
+                showToast("Error", currentLang === 'id' ? "Gagal membuat PDF. Cek console." : "Failed to create PDF.", 'error');
             }
         }
 
@@ -1548,7 +1548,7 @@
             // BUGFIX: dulu nominal 0 / kosong / NaN bisa ke-save diam-diam (karena "required"
             // cuma ngecek non-empty, bukan valid angka > 0). Sekarang divalidasi dulu.
             if (!rawAmount || isNaN(amount) || amount <= 0) {
-                showGlassNotif(currentLang === 'id' ? 'Validasi' : 'Validation', currentLang === 'id' ? 'Jumlah harus diisi dan lebih dari 0.' : 'Amount must be filled and greater than 0.', {type:'warning'});
+                showToast(currentLang === 'id' ? 'Validasi' : 'Validation', currentLang === 'id' ? 'Jumlah harus diisi dan lebih dari 0.' : 'Amount must be filled and greater than 0.', 'error');
                 document.getElementById('amount').focus();
                 return;
             }
