@@ -1134,17 +1134,31 @@
                 { confirmText: isId ? 'Hapus Semua' : 'Delete All', cancelText: isId ? 'Batal' : 'Cancel' }
             );
             if (result === 1) {
-                // Hapus semua transaksi
-                transactions.forEach(t => { getUserTransactionsRef().doc(String(t.id)).delete(); });
+                // Hapus semua transaksi dari Firestore
+                const txDeletes = transactions.map(t => getUserTransactionsRef().doc(String(t.id)).delete());
+                // Hapus semua tabungan dari Firestore (gunakan savingsRef, bukan fungsi)
+                const savingDeletes = savingsData.map(s => savingsRef ? savingsRef.doc(String(s.id)).delete() : Promise.resolve());
+                
+                await Promise.all([...txDeletes, ...savingDeletes]);
+                
+                // Reset data lokal
                 transactions = [];
-                // Hapus semua tabungan
-                savingsData.forEach(s => { getUserSavingsRef().doc(String(s.id)).delete(); });
                 savingsData = [];
                 
+                // Update UI home (transaksi)
                 updateDashboard();
-                renderSavingsDashboard();
-                if(!document.getElementById('fullHistoryScreen').classList.contains('translate-x-full')) renderFullHistory();
+                renderFullHistory();
                 if (currentTab === 'report') renderReport();
+                
+                // Update UI tabungan secara langsung tanpa tunggu Firestore
+                document.getElementById('totalSavingBal').innerText = 'Rp 0';
+                document.getElementById('savingIncome').innerText = 'Rp 0';
+                document.getElementById('savingExpense').innerText = 'Rp 0';
+                renderRecentSavings();
+                if (!document.getElementById('fullSavingHistoryScreen').classList.contains('translate-x-full')) {
+                    renderFullSavingHistory();
+                }
+                
                 closeOptionsModal();
                 showGlassNotif(isId ? 'Berhasil' : 'Success', isId ? 'Semua data telah dihapus.' : 'All data has been deleted.', {type: 'success'});
             }
