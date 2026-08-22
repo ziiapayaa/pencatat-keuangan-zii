@@ -1481,7 +1481,8 @@
             updateDashboard(); 
             if(!document.getElementById('fullHistoryScreen').classList.contains('translate-x-full')) renderFullHistory();
             if (currentTab === 'report') renderReport(); 
-            closeModal(); 
+            closeModal();
+            showGlassNotif(currentLang === 'id' ? 'Berhasil' : 'Success', currentLang === 'id' ? 'Data transaksi berhasil disimpan.' : 'Transaction data saved successfully.', {type: 'success'});
         });
 
         // Apply language immediately before first paint
