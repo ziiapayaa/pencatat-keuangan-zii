@@ -1006,9 +1006,9 @@
                 groupDiv.insertAdjacentHTML('beforeend', headerHtml);
 
                 const listDiv = document.createElement('div');
-                listDiv.className = 'space-y-3';
+                listDiv.className = 'glass-card rounded-[1.5rem] mt-3 p-2 flex flex-col space-y-1';
 
-                data.items.forEach(t => {
+                data.items.forEach((t, idx) => {
                     const isIncome = t.type === 'income';
                     const amountColor = isIncome ? 'text-green-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400';
                     const sign = isIncome ? '+' : '-';
@@ -1018,8 +1018,8 @@
                     const displayCategory = tText(t.category);
 
                     const itemHtml = `
-                        <div onclick="toggleDetails('details-hist-${t.id}')" class="glass-card p-4 rounded-[1.25rem] shadow-sm flex flex-col transition-all duration-300 cursor-pointer hover:bg-white/80 dark:hover:bg-white/10 active:scale-[0.98]">
-                            <div class="flex justify-between items-start px-0.5">
+                        <div onclick="toggleDetails('details-hist-${t.id}')" class="bg-white/30 dark:bg-white/5 p-3 rounded-xl flex flex-col transition-all cursor-pointer hover:bg-white/60 dark:hover:bg-white/10 active:scale-[0.98] ${idx !== data.items.length - 1 ? 'border-b border-gray-200/50 dark:border-white/5' : ''}">
+                            <div class="flex justify-between items-center px-1">
                                 <div>
                                     <h4 class="font-extrabold text-[14.5px] text-gray-900 dark:text-white drop-shadow-sm tracking-tight">${displayCategory}</h4>
                                     <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 mt-0.5 tracking-wider">${dateStr}</p>
